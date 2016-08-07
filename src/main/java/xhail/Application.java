@@ -136,6 +136,13 @@ public class Application implements Callable<Answers> {
 					case "--terminate":
 						builder.setTerminate(true);
 						break;
+					case "-B":
+					case "--budget":
+						if (args.length - i <= 1)
+							builder.missingParameter();
+						else
+							builder.setBudget(args[++i]);
+						break;
 					case "-v":
 					case "--version":
 						builder.setVersion(true);
