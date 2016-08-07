@@ -109,7 +109,10 @@ public class Finder {
 		if (null == match || String.join(" ", match).trim().isEmpty())
 			return false;
 		try {
-			String[] command = combine(executable, "--version");
+			String varg = "--version";
+			if( executable.toString().contains("wasp") )
+				varg = "-h"; // wasp has no --version argument
+			String[] command = combine(executable, varg);
 			System.err.println("calling '"+String.join(" ", command)+"' to detect binary matching '"+String.join("|", match)+"'");
 			ProcessBuilder builder = new ProcessBuilder(command);
 			Process process = builder.start();

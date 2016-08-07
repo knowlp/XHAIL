@@ -186,17 +186,17 @@ public class Application implements Callable<Answers> {
 				if (found)
 					Logger.found(config);
 			}
-			Finder cfinder = new Finder(" 3.", "clasp");
-			cfinder.test("clasp", config.getClasp());
+			Finder cfinder = new Finder(" 2.0", "wasp");
+			cfinder.test("wasp", config.getClasp());
 			if (!cfinder.isFound() && config.isSearch()) {
-				Logger.message("Locating clasp ...");
+				Logger.message("Locating wasp ...");
 				boolean found = false;
 				for (int i = 0; !found && i < PATHS.length; i++)
 					found = cfinder.find(PATHS[i], false);
 				// XXX searching / might not be the perfect idea, how about using something like environment PATH?
 				if (!found)
 					found = cfinder.find(ROOT, true);
-				config.setClasp(cfinder.get("clasp"));
+				config.setClasp(cfinder.get("wasp"));
 				if (found)
 					Logger.found(config);
 			}
@@ -204,11 +204,11 @@ public class Application implements Callable<Answers> {
 				String message = "";
 				if (null == gfinder.get("gringo"))
 					message += String.format("'gringo v4.*' needed to run %s", Logger.SIGNATURE);
-				if (null == cfinder.get("clasp"))
+				if (null == cfinder.get("wasp"))
 					if (message.isEmpty())
-						message += String.format("'clasp v3.*' needed to run %s", Logger.SIGNATURE);
+						message += String.format("'wasp 2.0' needed to run %s", Logger.SIGNATURE);
 					else
-						message += String.format("\n*** ERROR (%s): 'clasp v3.*' needed to run %s", Logger.SIGNATURE, Logger.SIGNATURE);
+						message += String.format("\n*** ERROR (%s): 'wasp 2.0' needed to run %s", Logger.SIGNATURE, Logger.SIGNATURE);
 				Logger.error(message);
 			}
 		}

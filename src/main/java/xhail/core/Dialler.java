@@ -5,7 +5,9 @@ package xhail.core;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.InputStream;
+import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.lang.ProcessBuilder.Redirect;
 import java.nio.file.Files;
@@ -98,7 +100,7 @@ public class Dialler {
 		return calls;
 	}
 
-	private final String[] clasp;
+	private final String[] solver;
 
 	private final Path errors;
 
@@ -124,14 +126,28 @@ public class Dialler {
 		if (null == builder)
 			throw new IllegalArgumentException("Illegal 'builder' argument in Dialler(Byprocess.Builder): " + builder);
 
-		ArrayList<String> claspCmd = new ArrayList<String>();
-		claspCmd.add(builder.config.getClasp().toAbsolutePath().toString());
-		claspCmd.add(builder.middle.toAbsolutePath().toString());
-		claspCmd.add("--verbose=0");
-		claspCmd.add("--opt-mode=optN");
-		if (null != builder.values)
-			claspCmd.add("--opt-bound=" + builder.values.toString());
-		this.clasp = claspCmd.toArray(new String[claspCmd.size()]);
+		ArrayList<String> solverCmd = new ArrayList<String>();
+		solverCmd.add(builder.config.getClasp().toAbsolutePath().toString());
+		if (false) {
+			// clasp options
+			solverCmd.add("--verbose=0");
+			solverCmd.add("--opt-mode=optN");
+			solverCmd.add("--opt-strategy=usc,7");
+			solverCmd.add("--configuration=handy");
+			if (null != builder.values)
+				solverCmd.add("--opt-bound=" + builder.values.toString());
+		} else {
+			// wasp options (git version 1c1d45)
+			solverCmd.add("--minisat-policy");
+			solverCmd.add("--weakconstraints-algorithm=one");
+			solverCmd.add("--enable-disjcores");
+			solverCmd.add("--trim-core");
+			solverCmd.add("--compute-firstmodel");
+			solverCmd.add("--shrinking-strategy=linearsearch");
+			solverCmd.add("--shrinking-budget=30"); // maybe increase this for really big instances?
+			solverCmd.add("--silent=0"); // very important for parseable output
+		}
+		this.solver = solverCmd.toArray(new String[solverCmd.size()]);
 
 		this.debug = builder.config.isDebug();
 		this.errors = builder.errors.toAbsolutePath();
@@ -165,30 +181,42 @@ public class Dialler {
 				handle(Files.newInputStream(errors));
 				try {
 					if (debug)
-						Logger.message(String.format("*** Info  (%s): calling '%s'", Logger.SIGNATURE, String.join(" ", this.clasp)));
-					Process clasp = new ProcessBuilder(this.clasp).redirectOutput(Redirect.to(target.toFile())).start();
+						Logger.message(String.format("*** Info  (%s): calling '%s'", Logger.SIGNATURE, String.join(" ", this.solver)));
+					Process solver = new ProcessBuilder(this.solver).redirectOutput(Redirect.to(target.toFile())).start();
+					// write program to standard input
+					OutputStream solverStdin = solver.getOutputStream();
+					InputStream fis = new FileInputStream(middle.toFile());
+					byte[] buffer = new byte[1024];
+					int read = 0;
+					while((read = fis.read(buffer)) != -1) {
+						    solverStdin.write(buffer, 0, read);
+					}
+					fis.close();
+					solverStdin.close();
+
+					// wait for termination
 					if (this.budget == 0) {
 						// wait forever
-						clasp.waitFor();
+						solver.waitFor();
 					} else {
 						// wait for specified time and then signal process (use suboptimal answer set)
 						// see http://stackoverflow.com/questions/37043114/how-to-stop-a-command-being-executed-after-4-5-seconds-through-process-builder
-						clasp.waitFor(this.budget, TimeUnit.SECONDS);
-						clasp.destroy();
-						clasp.waitFor();
+						solver.waitFor(this.budget, TimeUnit.SECONDS);
+						solver.destroy();
+						solver.waitFor();
 					}
 					try {
 						return Acquirer.from(Files.newInputStream(target)).parse();
 					} catch (IOException e) {
 						if (!output)
-							Logger.error("cannot read from 'clasp' process");
+							Logger.error("cannot read from solver process");
 					}
 				} catch (IOException e) {
 					if (!output)
-						Logger.error("cannot launch 'clasp' process");
+						Logger.error("cannot launch solver process");
 				} catch (InterruptedException e) {
 					if (!output)
-						Logger.error("'clasp' process was interrupted");
+						Logger.error("solver process was interrupted");
 				}
 			} catch (IOException e) {
 				if (!output)

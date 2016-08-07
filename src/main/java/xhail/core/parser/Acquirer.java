@@ -24,6 +24,8 @@ public class Acquirer {
 
 	private static final String OPTIMIZATION = "Optimization:";
 
+	private static final String COST = "COST";
+
 	private static final String OPTIMUM = "OPTIMUM";
 
 	private static final String SATISFIABLE = "SATISFIABLE";
@@ -44,6 +46,8 @@ public class Acquirer {
 
 	private String token;
 
+	private boolean optimal = false;
+
 	private Tokeniser tokeniser;
 
 	private Values values = new Values();
@@ -62,7 +66,7 @@ public class Acquirer {
 			return false;
 		boolean result = true;
 		for (int i = 0; result && i < token.length(); i++)
-			result = Character.isDigit(token.charAt(i));
+			result = Character.isDigit(token.charAt(i)) || token.charAt(i) == '@';
 		return result;
 	}
 
@@ -75,12 +79,26 @@ public class Acquirer {
 				parseUNSATISFIABLE();
 			else
 				parseAnswer();
+			if (!optimal) {
+				Logger.message(String.format("got end of input with best value %s and first value %s (suboptimal result)", this.values.toString(), this.firstValues.toString()));
+			}
+
 			parseEOF();
 		} catch (ParserErrorException e) {
 			Logger.error(e.getMessage());
 			// return null;
 		}
 		return new SimpleEntry<Values, Collection<Collection<String>>>(this.values, this.answers);
+	}
+
+	private static String cleanToken(String t) {
+		if (t.charAt(0) == '{')
+			t = t.substring(1);
+		if (t.charAt(t.length()-1) == '}')
+			t = t.substring(0,t.length()-1);
+		if (t.charAt(t.length()-1) == ',')
+			t = t.substring(0,t.length()-1);
+		return t;
 	}
 
 	private void parseAnswer() throws ParserErrorException {
@@ -90,23 +108,36 @@ public class Acquirer {
 //				|| UNSATISFIABLE.equals(token))
 //			throw new ParserErrorException(String.format("expected ATOM but '%s' found", token));
 		this.atoms = new HashSet<>();
-		while (null != token && !FOUND.equals(token) && !OPTIMIZATION.equals(token) && !OPTIMUM.equals(token) && !SATISFIABLE.equals(token)
+		while (null != token && !FOUND.equals(token) && !COST.equals(token) && !OPTIMUM.equals(token) && !SATISFIABLE.equals(token)
 				&& !UNKNOWN.equals(token) && !UNSATISFIABLE.equals(token)) {
-			atoms.add(token);
+			if (!"{}".equals(token))
+				atoms.add(cleanToken(token));
 			token = tokeniser.next();
 		}
-		if (SATISFIABLE.equals(token)) {
-			parseSATISFIABLE();
-			answers.add(atoms);
-		} else {
-			parseOPTIMIZATION();
-			parseValues();
-		}
+		parseCOST();
+		parseValues();
 	}
 
 	private void parseEOF() throws ParserErrorException {
 		if (null != token)
 			throw new ParserErrorException("expected EOF but '" + token + "' found");
+	}
+
+	private void parseCOST() throws ParserErrorException {
+		if (null == token)
+			throw new ParserErrorException(String.format("expected '%s' but 'EOF' found", COST));
+		if (!COST.equals(token))
+			throw new ParserErrorException(String.format("expected '%s' but '%s' found", COST, token));
+		token = tokeniser.next();
+	}
+
+	private void parseCOSTSHRINK() throws ParserErrorException {
+		if (null == token)
+			throw new ParserErrorException(String.format("expected '%s' but 'EOF' found", COST));
+		if (!COST.equals(token))
+			throw new ParserErrorException(String.format("expected '%s' but '%s' found", COST, token));
+		token = tokeniser.next();
+		token = tokeniser.next();
 	}
 
 	private void parseFOUND() throws ParserErrorException {
@@ -124,12 +155,12 @@ public class Acquirer {
 //				|| UNSATISFIABLE.equals(token))
 //			throw new ParserErrorException(String.format("expected ATOM but '%s' found", token));
 		this.atoms = new HashSet<>();
-		while (null != token && !FOUND.equals(token) && !OPTIMIZATION.equals(token) && !OPTIMUM.equals(token) && !SATISFIABLE.equals(token)
+		while (null != token && !FOUND.equals(token) && !COST.equals(token) && !OPTIMUM.equals(token) && !SATISFIABLE.equals(token)
 				&& !UNKNOWN.equals(token) && !UNSATISFIABLE.equals(token)) {
-			atoms.add(token);
+			atoms.add(cleanToken(token));
 			token = tokeniser.next();
 		}
-		parseOPTIMIZATION();
+		parseCOST();
 		parseValues();
 	}
 
@@ -139,6 +170,7 @@ public class Acquirer {
 		if (!OPTIMIZATION.equals(token))
 			throw new ParserErrorException(String.format("expected '%s' but '%s' found", OPTIMIZATION, token));
 		token = tokeniser.next();
+		optimal = true;
 	}
 
 	private void parseOPTIMUM() throws ParserErrorException {
@@ -195,14 +227,14 @@ public class Acquirer {
 			this.firstValues = this.values;
 		if (order <= 0)
 			answers.add(atoms);
-		if (OPTIMUM.equals(token)) {
-			parseOPTIMUM();
-			parseFOUND();
-		} else if (SATISFIABLE.equals(token)) {
-			Logger.message(String.format("got SATISFIABLE with best value %s and first value %s (suboptimal result)", this.values.toString(), this.firstValues.toString()));
-			parseSATISFIABLE();
-		} else {
-			parseNested();
+		while (COST.equals(token))
+			parseCOSTSHRINK();
+		if (token != null) {
+			if (OPTIMUM.equals(token)) {
+				parseOPTIMUM();
+			} else {
+				parseNested();
+			}
 		}
 	}
 

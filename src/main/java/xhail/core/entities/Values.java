@@ -28,8 +28,11 @@ public class Values implements Comparable<Values> {
 			this.source = values;
 			String[] converted = values.split(" ");
 			this.values = new int[converted.length];
-			for (int i = 0; i < converted.length; i++)
-				this.values[i] = Integer.parseInt(converted[i]);
+			for (int i = 0; i < converted.length; i++) {
+				// wasp gives, e.g., 5@1 4@2 ...
+				String[] split = converted[i].split("@");
+				this.values[i] = Integer.parseInt(split[0]);
+			}
 		} catch (NumberFormatException e) {
 			throw new IllegalArgumentException("Illegal 'values' argument in Values(String): " + values);
 		}
