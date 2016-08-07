@@ -47,6 +47,8 @@ public class Acquirer {
 	private Tokeniser tokeniser;
 
 	private Values values = new Values();
+
+	private Values firstValues = null;
 	
 	private Acquirer(Tokeniser tokeniser) {
 		if (null == tokeniser)
@@ -189,11 +191,16 @@ public class Acquirer {
 			answers.clear();
 			this.values = found;
 		}
+		if( this.firstValues == null )
+			this.firstValues = this.values;
 		if (order <= 0)
 			answers.add(atoms);
 		if (OPTIMUM.equals(token)) {
 			parseOPTIMUM();
 			parseFOUND();
+		} else if (SATISFIABLE.equals(token)) {
+			Logger.message(String.format("got SATISFIABLE with best value %s and first value %s (suboptimal result)", this.values.toString(), this.firstValues.toString()));
+			parseSATISFIABLE();
 		} else {
 			parseNested();
 		}

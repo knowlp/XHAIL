@@ -26,6 +26,7 @@ public class Config {
 		private boolean help = false;
 		private int iterations = 0;
 		private long kill = 0L;
+		private long budget = 0L;
 		private boolean mute = false;
 		private boolean output = false;
 		private boolean prettify = false;
@@ -129,6 +130,15 @@ public class Config {
 			return this;
 		}
 
+		public Builder setBudget(String budget) {
+			try {
+				this.budget = Long.parseUnsignedLong(budget);
+			} catch (NullPointerException | NumberFormatException e) {
+				errors += String.format("  '%s' is not a valid amount of seconds\n", budget);
+			}
+			return this;
+		}
+
 		public Builder setMute(boolean mute) {
 			this.mute = mute;
 			return this;
@@ -178,6 +188,8 @@ public class Config {
 	private final int iterations;
 
 	private final long kill;
+  
+	private final long budget;
 
 	private final boolean mute;
 
@@ -207,6 +219,7 @@ public class Config {
 		this.iterations = builder.iterations;
 		this.help = builder.help;
 		this.kill = builder.kill;
+		this.budget = builder.budget;
 		String name = "stdin";
 		if (builder.sources.size() > 0) {
 			name = builder.sources.iterator().next().getFileName().toString();
@@ -240,6 +253,10 @@ public class Config {
 
 	public final long getKill() {
 		return kill;
+	}
+
+	public final long getBudget() {
+		return budget;
 	}
 
 	public final String getName() {
