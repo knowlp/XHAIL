@@ -182,3 +182,5 @@ public class Finder {
 	}
 
 }
+
+// vim:noet:
