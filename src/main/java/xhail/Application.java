@@ -183,7 +183,7 @@ public class Application implements Callable<Answers> {
 			if (!finder.isFound()) {
 				String message = "";
 				if (null == finder.get("gringo"))
-					message += String.format("'gringo v3.*' needed to run %s", Logger.SIGNATURE);
+					message += String.format("'gringo v3.* or v4.*' needed to run %s", Logger.SIGNATURE);
 				if (null == finder.get("clasp"))
 					if (message.isEmpty())
 						message += String.format("'clasp v3.*' needed to run %s", Logger.SIGNATURE);
