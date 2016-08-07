@@ -194,6 +194,8 @@ public class Acquirer {
 		if (OPTIMUM.equals(token)) {
 			parseOPTIMUM();
 			parseFOUND();
+		} else if (SATISFIABLE.equals(token)) {
+			parseSATISFIABLE();
 		} else {
 			parseNested();
 		}
