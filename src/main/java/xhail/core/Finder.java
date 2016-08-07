@@ -40,6 +40,7 @@ public class Finder {
 				throw new IllegalArgumentException("Illegal 'version' argument in Finder.Walker(String, String...): " + version);
 			if (null == apps)
 				throw new IllegalArgumentException("Illegal 'apps' argument in Finder.Walker(String, String...): " + apps);
+			System.err.println("initializing Finder.Walker("+version+",["+String.join(",", apps)+"])");
 			this.matchers = new HashMap<>();
 			for (String app : apps)
 				this.matchers.put(app, FileSystems.getDefault().getPathMatcher("glob:{" + app + "," + app + "-*}{,.exe}"));
@@ -109,6 +110,7 @@ public class Finder {
 			return false;
 		try {
 			String[] command = combine(executable, "--version");
+			System.err.println("calling '"+String.join(" ", command)+"' to detect binary matching '"+String.join("|", match)+"'");
 			ProcessBuilder builder = new ProcessBuilder(command);
 			Process process = builder.start();
 			process.waitFor();
@@ -151,6 +153,7 @@ public class Finder {
 	}
 
 	public boolean find(Path path, boolean recurse) {
+		System.err.println("Finder.find("+path+","+recurse+")");
 		boolean result = isFound();
 		if (!result && null != path && Files.exists(path))
 			result = walker.find(path, recurse);
@@ -168,6 +171,7 @@ public class Finder {
 	}
 
 	public boolean test(String name, Path file) {
+		System.err.println("Finder.test("+name+","+file+")");
 		if (null == name || (name = name.trim()).isEmpty() || !walker.matchers.containsKey(name))
 			throw new IllegalArgumentException("Illegal 'name' argument in Finder.test(String, Path): " + name);
 		boolean result = walker.results.containsKey(name);
