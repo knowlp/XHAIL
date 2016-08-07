@@ -198,11 +198,16 @@ public class Grounding implements Solvable {
 							literalId));
 
 				Atom head = clauses[clauseId].getHead();
-				result.add(String.format("#minimize[ use_clause_literal(%d,0) =%d @%d ].", clauseId, head.getWeight(), head.getPriority()));
+				//result.add(String.format("#minimize[ use_clause_literal(%d,0) =%d @%d ].", clauseId, head.getWeight(), head.getPriority()));
+				result.add(String.format(":~ use_clause_literal(%d,0). [%d@%d,%d]", clauseId, head.getWeight(), head.getPriority(), clauseId));
 
 				for (int literalId = 1; literalId <= literals.length; literalId++)
-					result.add(String.format("#minimize[ use_clause_literal(%d,%d) =%d @%d ].", clauseId, literalId, //
-							literals[literalId - 1].getWeight(), literals[literalId - 1].getPriority()));
+					//result.add(String.format("#minimize[ use_clause_literal(%d,%d) =%d @%d ].", clauseId, literalId, //
+					//		literals[literalId - 1].getWeight(), literals[literalId - 1].getPriority()));
+					result.add(String.format(":~ use_clause_literal(%d,%d). [%d@%d,use_clause_literal(%d,%d)]",
+						clauseId, literalId,
+						literals[literalId - 1].getWeight(), literals[literalId - 1].getPriority(),
+						clauseId, literalId));
 
 				Set<String> set = new LinkedHashSet<>();
 				for (String type : head.getTypes())
@@ -309,7 +314,8 @@ public class Grounding implements Solvable {
 
 	public final Collection<String> getFilters() {
 		Set<String> result = new TreeSet<>();
-		result.add("#hide.");
+		//result.add("#hide.");
+		result.add("#show.");
 		// result.add("#show display_fact/1.");
 		// result.add("#show covered_example/2.");
 		// result.add("#show number_abduced/1.");
