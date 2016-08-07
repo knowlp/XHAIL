@@ -14,6 +14,8 @@ import java.util.AbstractMap.SimpleEntry;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
+import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 import xhail.core.entities.Grounding;
 import xhail.core.entities.Problem;
@@ -116,6 +118,8 @@ public class Dialler {
 
 	private final boolean debug;
 
+	private final long budget;
+
 	private Dialler(Builder builder) {
 		if (null == builder)
 			throw new IllegalArgumentException("Illegal 'builder' argument in Dialler(Byprocess.Builder): " + builder);
@@ -137,6 +141,7 @@ public class Dialler {
 		this.solvable = builder.solvable;
 		this.source = builder.source.toAbsolutePath();
 		this.target = builder.target.toAbsolutePath();
+		this.budget = builder.config.getBudget();
 	}
 
 	public Map.Entry<Values, Collection<Collection<String>>> execute(int iter) {
@@ -156,7 +161,16 @@ public class Dialler {
 					if (debug)
 						Logger.message(String.format("*** Info  (%s): calling '%s'", Logger.SIGNATURE, String.join(" ", this.clasp)));
 					Process clasp = new ProcessBuilder(this.clasp).redirectOutput(Redirect.to(target.toFile())).start();
-					clasp.waitFor();
+					if (this.budget == 0) {
+						// wait forever
+						clasp.waitFor();
+					} else {
+						// wait for specified time and then signal process (use suboptimal answer set)
+						// see http://stackoverflow.com/questions/37043114/how-to-stop-a-command-being-executed-after-4-5-seconds-through-process-builder
+						clasp.waitFor(this.budget, TimeUnit.SECONDS);
+						clasp.destroy();
+						clasp.waitFor();
+					}
 					try {
 						return Acquirer.from(Files.newInputStream(target)).parse();
 					} catch (IOException e) {
