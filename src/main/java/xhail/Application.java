@@ -165,26 +165,39 @@ public class Application implements Callable<Answers> {
 			Logger.version();
 		Logger.header(config);
 		if (!config.isPrettify()) { // || config.getIndex() > 0
-			Finder finder = new Finder(" 3.", "gringo", "clasp");
-			finder.test("gringo", config.getGringo());
-			finder.test("clasp", config.getClasp());
-			if (!finder.isFound() && config.isSearch()) {
-				Logger.message("Locating needed applications...");
+			Finder gfinder = new Finder(" 4.", "gringo");
+			gfinder.test("gringo", config.getGringo());
+			if (!gfinder.isFound() && config.isSearch()) {
+				Logger.message("Locating gringo ...");
 				boolean found = false;
 				for (int i = 0; !found && i < PATHS.length; i++)
-					found = finder.find(PATHS[i], false);
+					found = gfinder.find(PATHS[i], false);
+				// XXX searching / might not be the perfect idea, how about using something like environment PATH?
 				if (!found)
-					found = finder.find(ROOT, true);
-				config.setGringo(finder.get("gringo"));
-				config.setClasp(finder.get("clasp"));
+					found = gfinder.find(ROOT, true);
+				config.setGringo(gfinder.get("gringo"));
 				if (found)
 					Logger.found(config);
 			}
-			if (!finder.isFound()) {
+			Finder cfinder = new Finder(" 3.", "clasp");
+			cfinder.test("clasp", config.getClasp());
+			if (!cfinder.isFound() && config.isSearch()) {
+				Logger.message("Locating clasp ...");
+				boolean found = false;
+				for (int i = 0; !found && i < PATHS.length; i++)
+					found = cfinder.find(PATHS[i], false);
+				// XXX searching / might not be the perfect idea, how about using something like environment PATH?
+				if (!found)
+					found = cfinder.find(ROOT, true);
+				config.setClasp(cfinder.get("clasp"));
+				if (found)
+					Logger.found(config);
+			}
+			if (!gfinder.isFound() || !cfinder.isFound()) {
 				String message = "";
-				if (null == finder.get("gringo"))
-					message += String.format("'gringo v3.*' needed to run %s", Logger.SIGNATURE);
-				if (null == finder.get("clasp"))
+				if (null == gfinder.get("gringo"))
+					message += String.format("'gringo v4.*' needed to run %s", Logger.SIGNATURE);
+				if (null == cfinder.get("clasp"))
 					if (message.isEmpty())
 						message += String.format("'clasp v3.*' needed to run %s", Logger.SIGNATURE);
 					else

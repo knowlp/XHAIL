@@ -42,7 +42,7 @@ public class Finder {
 				throw new IllegalArgumentException("Illegal 'apps' argument in Finder.Walker(String, String...): " + apps);
 			this.matchers = new HashMap<>();
 			for (String app : apps)
-				this.matchers.put(app, FileSystems.getDefault().getPathMatcher("glob:{" + app + "," + app + ".exe}"));
+				this.matchers.put(app, FileSystems.getDefault().getPathMatcher("glob:{" + app + "," + app + "-*}{,.exe}"));
 			this.results = new HashMap<>();
 			this.version = version;
 		}

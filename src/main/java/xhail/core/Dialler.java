@@ -14,6 +14,7 @@ import java.util.AbstractMap.SimpleEntry;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
+import java.util.ArrayList;
 
 import xhail.core.entities.Grounding;
 import xhail.core.entities.Problem;
@@ -119,18 +120,24 @@ public class Dialler {
 	private Dialler(Builder builder) {
 		if (null == builder)
 			throw new IllegalArgumentException("Illegal 'builder' argument in Dialler(Byprocess.Builder): " + builder);
-		this.clasp = new String[null == builder.values ? 4 : 5];
-		this.clasp[0] = builder.config.getClasp().toAbsolutePath().toString();
-		this.clasp[1] = builder.middle.toAbsolutePath().toString();
-		this.clasp[2] = "--verbose=0";
-		this.clasp[3] = "--opt-mode=optN";
+
+		ArrayList<String> claspCmd = new ArrayList<String>();
+		claspCmd.add(builder.config.getClasp().toAbsolutePath().toString());
+		claspCmd.add(builder.middle.toAbsolutePath().toString());
+		claspCmd.add("--verbose=0");
+		claspCmd.add("--opt-mode=optN");
 		if (null != builder.values)
-			this.clasp[4] = "--opt-bound=" + builder.values.toString();
+			claspCmd.add("--opt-bound=" + builder.values.toString());
+		this.clasp = claspCmd.toArray(new String[claspCmd.size()]);
+
 		this.debug = builder.config.isDebug();
 		this.errors = builder.errors.toAbsolutePath();
-		this.gringo = new String[2];
-		this.gringo[0] = builder.config.getGringo().toAbsolutePath().toString();
-		this.gringo[1] = builder.source.toAbsolutePath().toString();
+
+		ArrayList<String> gringoCmd = new ArrayList<String>();
+		gringoCmd.add(builder.config.getGringo().toAbsolutePath().toString());
+		gringoCmd.add(builder.source.toAbsolutePath().toString());
+		this.gringo = gringoCmd.toArray(new String[gringoCmd.size()]);
+
 		this.middle = builder.middle.toAbsolutePath();
 		this.mute = builder.config.isMute();
 		this.output = builder.config.isOutput();
