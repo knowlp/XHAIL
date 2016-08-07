@@ -167,3 +167,5 @@ public class Tokeniser {
 	}
 
 }
+
+// vim:noet:
