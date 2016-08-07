@@ -200,3 +200,5 @@ public class Acquirer {
 	}
 
 }
+
+// vim:noet:
