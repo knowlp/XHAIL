@@ -92,12 +92,14 @@ public class Acquirer {
 	}
 
 	private static String cleanToken(String t) {
+		//System.out.println("original token '"+t+"'");
 		if (t.charAt(0) == '{')
 			t = t.substring(1);
 		if (t.charAt(t.length()-1) == '}')
 			t = t.substring(0,t.length()-1);
 		if (t.charAt(t.length()-1) == ',')
 			t = t.substring(0,t.length()-1);
+		//System.out.println("cleaned token '"+t+"'");
 		return t;
 	}
 
@@ -137,6 +139,7 @@ public class Acquirer {
 		if (!COST.equals(token))
 			throw new ParserErrorException(String.format("expected '%s' but '%s' found", COST, token));
 		token = tokeniser.next();
+		//System.err.println("got '"+token+"' in COSTSHRINK");
 		token = tokeniser.next();
 	}
 

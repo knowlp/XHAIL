@@ -142,6 +142,7 @@ public class Tokeniser {
 		boolean finished = false;
 		while (!finished)
 			finished = state.process(this);
+		//System.err.println("tokenizer returning '"+token+"'");
 		return token;
 	}
 
@@ -149,7 +150,9 @@ public class Tokeniser {
 		try {
 			if (null == stream)
 				return -1;
-			return stream.read();
+			int ret = stream.read();
+			//System.err.println(String.format("tokenizer reading %d '%s'", ret, Character.toString((char)ret)));
+			return ret;
 		} catch (IOException e) {
 			Logger.error("cannot read for the input stream");
 			return -1;
