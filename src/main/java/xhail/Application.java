@@ -271,3 +271,5 @@ public class Application implements Callable<Answers> {
 		}
 	}
 }
+
+// vim:noet:
