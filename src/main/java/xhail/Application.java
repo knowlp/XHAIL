@@ -249,7 +249,8 @@ public class Application implements Callable<Answers> {
 			} catch (CancellationException e) {
 				Logger.message(String.format("*** Info  (%s): computation was cancelled", Logger.SIGNATURE));
 			} catch (ExecutionException e) {
-				Logger.message(String.format("*** Info  (%s): computation threw an exception", Logger.SIGNATURE));
+				Logger.message(String.format("*** Info  (%s): computation threw an exception %s", Logger.SIGNATURE, e.getMessage()));
+        e.printStackTrace();
 			} catch (InterruptedException e) {
 				Logger.message(String.format("*** Info  (%s): current thread was interrupted while waiting", Logger.SIGNATURE));
 			} catch (TimeoutException e) {
