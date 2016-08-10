@@ -75,13 +75,13 @@ public class Dialler {
 		public Dialler build() {
 			try {
 				this.source = Files.createTempFile("xhail", ".tmp");
-				this.source.toFile().deleteOnExit();
+				//this.source.toFile().deleteOnExit();
 				this.middle = Files.createTempFile("xhail", ".tmp");
-				this.middle.toFile().deleteOnExit();
+				//this.middle.toFile().deleteOnExit();
 				this.target = Files.createTempFile("xhail", ".tmp");
-				this.target.toFile().deleteOnExit();
+				//this.target.toFile().deleteOnExit();
 				this.errors = Files.createTempFile("xhail", ".tmp");
-				this.errors.toFile().deleteOnExit();
+				//this.errors.toFile().deleteOnExit();
 			} catch (Exception e) {
 				Logger.error("cannot send data to processes");
 			}
