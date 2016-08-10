@@ -132,7 +132,7 @@ public class Utils {
 			printer.println("%%% I. Inflation");
 			if (iter > 0) {
 				printer.println(":-bad_solution.");
-				printer.println("number_abduced(V):-V:=#sum[ number_abduced(_,W) =W ].");
+				printer.println("number_abduced(V):- V = #sum { W,U: number_abduced(U,W) }.");
 			}
 			for (ModeH mode : problem.getModeHs())
 				for (String statement : mode.asClauses())

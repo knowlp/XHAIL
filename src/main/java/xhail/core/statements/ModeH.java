@@ -109,7 +109,7 @@ public class ModeH {
 		//result[2] = String.format("#minimize[ abduced_%s =%d @%d%s ].", atom, weight, priority, types);
 		result[2] = String.format(":~ abduced_%s %s. [%d@%d,abduced_%s]", atom, list, weight, priority, atom);
 		result[3] = String.format("%s:-abduced_%s%s.", atom, atom, list);
-		result[4] = String.format("number_abduced(%d,V):-V:=#count{ abduced_%s%s }.", id, atom, types);
+		result[4] = String.format("number_abduced(%d,V) :- V = #count { abduced_%s%s }.", id, atom, types);
 		return result;
 	}
 

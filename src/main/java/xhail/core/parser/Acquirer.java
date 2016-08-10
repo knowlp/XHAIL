@@ -93,10 +93,16 @@ public class Acquirer {
 
 	private static String cleanToken(String t) {
 		//System.out.println("original token '"+t+"'");
+		if (t.length() == 0)
+			return t;
 		if (t.charAt(0) == '{')
 			t = t.substring(1);
+		if (t.length() == 0)
+			return t;
 		if (t.charAt(t.length()-1) == '}')
 			t = t.substring(0,t.length()-1);
+		if (t.length() == 0)
+			return t;
 		if (t.charAt(t.length()-1) == ',')
 			t = t.substring(0,t.length()-1);
 		//System.out.println("cleaned token '"+t+"'");
