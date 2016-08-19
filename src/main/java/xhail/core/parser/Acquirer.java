@@ -81,6 +81,8 @@ public class Acquirer {
 				parseAnswer();
 			if (!optimal) {
 				Logger.message(String.format("got end of input with best value %s and first value %s (suboptimal result)", this.values.toString(), this.firstValues.toString()));
+			} else {
+				Logger.message(String.format("got end of input with best value %s and first value %s (optimal result)", this.values.toString(), this.firstValues.toString()));
 			}
 
 			parseEOF();
