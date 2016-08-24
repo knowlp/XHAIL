@@ -6,8 +6,11 @@ package xhail.core;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.BufferedOutputStream;
 import java.io.InputStream;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 import java.io.InputStreamReader;
 import java.lang.ProcessBuilder.Redirect;
 import java.nio.file.Files;
@@ -17,6 +20,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 import java.util.ArrayList;
+import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
 import xhail.core.entities.Grounding;
@@ -180,9 +184,10 @@ public class Dialler {
 				gringo.waitFor();
 				handle(Files.newInputStream(errors));
 				try {
-					if (debug)
+					if (debug) {
 						Logger.message(String.format("*** Info  (%s): calling '%s'", Logger.SIGNATURE, String.join(" ", this.solver)));
-					Process solver = new ProcessBuilder(this.solver).redirectOutput(Redirect.to(target.toFile())).start();
+					}
+					Process solver = new ProcessBuilder(this.solver).start();
 					// write program to standard input
 					OutputStream solverStdin = solver.getOutputStream();
 					InputStream fis = new FileInputStream(middle.toFile());
@@ -193,6 +198,20 @@ public class Dialler {
 					}
 					fis.close();
 					solverStdin.close();
+
+					// read from standard output and write to file
+					// (print in debug mode)
+					// TODO if this hangs we must do it in a thread
+					PrintStream os = new PrintStream(new BufferedOutputStream(new FileOutputStream(target.toFile())));
+
+					Scanner sc = new Scanner(solver.getInputStream());
+					while (sc.hasNextLine()) {
+						String s = sc.nextLine();
+						if (debug)
+							Logger.message("[solver] "+s);
+						os.println(s);
+					}
+					os.close();
 
 					// wait for termination
 					if (this.budget == 0) {
