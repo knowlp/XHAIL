@@ -32,6 +32,7 @@ import xhail.core.parser.Acquirer;
 /**
  * @author stefano
  *
+ * WASP and time budget addition by Peter Schueller <schueller.p@gmail.com>
  */
 public class Dialler {
 
@@ -141,7 +142,7 @@ public class Dialler {
 			if (null != builder.values)
 				solverCmd.add("--opt-bound=" + builder.values.toString());
 		} else {
-			// wasp options (git version 1c1d45)
+			// works with git version 1c1d45 and above
 			solverCmd.add("--minisat-policy");
 			solverCmd.add("--weakconstraints-algorithm=one");
 			solverCmd.add("--enable-disjcores");
@@ -205,10 +206,11 @@ public class Dialler {
 					PrintStream os = new PrintStream(new BufferedOutputStream(new FileOutputStream(target.toFile())));
 
 					Scanner sc = new Scanner(solver.getInputStream());
+					long starttime = System.nanoTime();
 					while (sc.hasNextLine()) {
 						String s = sc.nextLine();
 						if (debug)
-							Logger.message("[solver] "+s);
+							Logger.message(String.format("[slv %.2f s] %s",(System.nanoTime()-starttime)/(1000.0*1000.0*1000.0), s));
 						os.println(s);
 					}
 					os.close();
