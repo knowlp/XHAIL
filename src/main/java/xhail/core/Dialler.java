@@ -127,6 +127,31 @@ public class Dialler {
 
 	private final long budget;
 
+	private class Stream2Stream extends Thread {
+		InputStream i;
+		OutputStream o;
+							    
+		Stream2Stream(InputStream i, OutputStream o) {
+			this.i = i;
+			this.o = o;
+		}
+
+		public void run() {
+			try {
+				byte[] buffer = new byte[1024];
+				int read = 0;
+				while((read = i.read(buffer)) != -1) {
+							o.write(buffer, 0, read);
+				}
+			} catch (IOException e) {
+				e.printStackTrace();  
+			}
+			// try to close both in every case
+			try { i.close(); } catch (Exception e) { }
+			try { o.close(); } catch (Exception e) { }
+		}
+	}
+
 	private Dialler(Builder builder) {
 		if (null == builder)
 			throw new IllegalArgumentException("Illegal 'builder' argument in Dialler(Byprocess.Builder): " + builder);
@@ -183,26 +208,22 @@ public class Dialler {
 				Process gringo = new ProcessBuilder(this.gringo) //
 						.redirectError(Redirect.to(errors.toFile())).redirectOutput(Redirect.to(middle.toFile())).start();
 				gringo.waitFor();
+				// here gringo has finished and its output is in file 'middle'
 				handle(Files.newInputStream(errors));
 				try {
 					if (debug) {
 						Logger.message(String.format("*** Info  (%s): calling '%s'", Logger.SIGNATURE, String.join(" ", this.solver)));
 					}
 					Process solver = new ProcessBuilder(this.solver).start();
-					// write program to standard input
-					OutputStream solverStdin = solver.getOutputStream();
+
 					InputStream fis = new FileInputStream(middle.toFile());
-					byte[] buffer = new byte[1024];
-					int read = 0;
-					while((read = fis.read(buffer)) != -1) {
-						    solverStdin.write(buffer, 0, read);
-					}
-					fis.close();
-					solverStdin.close();
+					// create thread that copies the contents of 'middle' to input of the solver
+					Thread s2s = new Stream2Stream(fis, solver.getOutputStream());
+					// start copying
+					s2s.start();
 
 					// read from standard output and write to file
-					// (print in debug mode)
-					// TODO if this hangs we must do it in a thread
+					// (and print in debug mode including timestamp)
 					PrintStream os = new PrintStream(new BufferedOutputStream(new FileOutputStream(target.toFile())));
 
 					Scanner sc = new Scanner(solver.getInputStream());
