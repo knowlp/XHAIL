@@ -136,6 +136,12 @@ public class Dialler {
 			this.o = o;
 		}
 
+		public void closeall() {
+			// try to close both in every case
+			try { i.close(); } catch (Exception e) { }
+			try { o.close(); } catch (Exception e) { }
+		}
+
 		public void run() {
 			try {
 				byte[] buffer = new byte[1024];
@@ -146,9 +152,35 @@ public class Dialler {
 			} catch (IOException e) {
 				e.printStackTrace();  
 			}
-			// try to close both in every case
-			try { i.close(); } catch (Exception e) { }
-			try { o.close(); } catch (Exception e) { }
+			closeall();
+		}
+	}
+
+	private class Stream2StreamLogging extends Stream2Stream {
+		long starttime;
+		String what;
+		PrintStream o;
+
+		Stream2StreamLogging(InputStream i, PrintStream o, String what) {
+			super(i,o);
+			this.starttime = System.nanoTime();
+			this.what = what;
+			this.o = o;
+		}
+
+		@Override
+		public void run() {
+			try {
+				Scanner sc = new Scanner(this.i);
+				while (sc.hasNextLine()) {
+					String s = sc.nextLine();
+					Logger.message(String.format("[%s %.2f s] %s", this.what, (System.nanoTime()-starttime)/(1000.0*1000.0*1000.0), s));
+					this.o.println(s);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();  
+			}
+			closeall();
 		}
 	}
 
@@ -218,23 +250,23 @@ public class Dialler {
 
 					InputStream fis = new FileInputStream(middle.toFile());
 					// create thread that copies the contents of 'middle' to input of the solver
-					Thread s2s = new Stream2Stream(fis, solver.getOutputStream());
+					Thread middle2solver = new Stream2Stream(fis, solver.getOutputStream());
 					// start copying
-					s2s.start();
+					middle2solver.start();
 
 					// read from standard output and write to file
 					// (and print in debug mode including timestamp)
 					PrintStream os = new PrintStream(new BufferedOutputStream(new FileOutputStream(target.toFile())));
-
-					Scanner sc = new Scanner(solver.getInputStream());
-					long starttime = System.nanoTime();
-					while (sc.hasNextLine()) {
-						String s = sc.nextLine();
-						if (debug)
-							Logger.message(String.format("[slv %.2f s] %s",(System.nanoTime()-starttime)/(1000.0*1000.0*1000.0), s));
-						os.println(s);
+					InputStream sis = solver.getInputStream();
+					Thread solver2output = null;
+					if (debug) {
+						// line-based and logging with time
+						solver2output = new Stream2StreamLogging(sis, os, "slv");
+					} else {
+						// just copying
+						solver2output = new Stream2Stream(sis, os);
 					}
-					os.close();
+					solver2output.start();
 
 					// wait for termination
 					if (this.budget == 0) {
