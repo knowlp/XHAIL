@@ -111,7 +111,7 @@ public class Acquirer {
 
 	private void parseAnswer() throws ParserErrorException {
 		if (null == token)
-			throw new ParserErrorException("expected ATOM but EOF found");
+			throw new ParserErrorException("parseAnswer: expected ATOM but EOF found");
 //		if (FOUND.equals(token) || OPTIMIZATION.equals(token) || OPTIMUM.equals(token) || SATISFIABLE.equals(token) || UNKNOWN.equals(token)
 //				|| UNSATISFIABLE.equals(token))
 //			throw new ParserErrorException(String.format("expected ATOM but '%s' found", token));
@@ -141,7 +141,7 @@ public class Acquirer {
 
 	private void parseCOSTSHRINK() throws ParserErrorException {
 		if (null == token)
-			throw new ParserErrorException(String.format("expected '%s' but 'EOF' found", COST));
+			throw new ParserErrorException(String.format("parseCOSTSHRINK: expected '%s' but 'EOF' found", COST));
 		if (!COST.equals(token))
 			throw new ParserErrorException(String.format("expected '%s' but '%s' found", COST, token));
 		token = tokeniser.next();
@@ -158,7 +158,7 @@ public class Acquirer {
 
 	private void parseNested() throws ParserErrorException {
 		if (null == token)
-			throw new ParserErrorException("expected ATOM but EOF found");
+			throw new ParserErrorException("parseNested: expected ATOM but EOF found");
 //		if (FOUND.equals(token) || OPTIMIZATION.equals(token) || OPTIMUM.equals(token) || SATISFIABLE.equals(token) || UNKNOWN.equals(token)
 //				|| UNSATISFIABLE.equals(token))
 //			throw new ParserErrorException(String.format("expected ATOM but '%s' found", token));
@@ -183,25 +183,25 @@ public class Acquirer {
 
 	private void parseOPTIMUM() throws ParserErrorException {
 		if (null == token)
-			throw new ParserErrorException(String.format("expected '%s' but 'EOF' found", OPTIMUM));
+			throw new ParserErrorException(String.format("parseOPTIMUM: expected '%s' but 'EOF' found", OPTIMUM));
 		if (!OPTIMUM.equals(token))
-			throw new ParserErrorException(String.format("expected '%s' but '%s' found", OPTIMUM, token));
+			throw new ParserErrorException(String.format("parseOPTIMUM: expected '%s' but '%s' found", OPTIMUM, token));
 		token = tokeniser.next();
 	}
 
 	private void parseSATISFIABLE() throws ParserErrorException {
 		if (null == token)
-			throw new ParserErrorException(String.format("expected '%s' but 'EOF' found", SATISFIABLE));
+			throw new ParserErrorException(String.format("parseSATISFIABLE: expected '%s' but 'EOF' found", SATISFIABLE));
 		if (!SATISFIABLE.equals(token))
-			throw new ParserErrorException(String.format("expected '%s' but '%s' found", SATISFIABLE, token));
+			throw new ParserErrorException(String.format("parseSATISFIABLE: expected '%s' but '%s' found", SATISFIABLE, token));
 		token = tokeniser.next();
 	}
 
 	private void parseUNKNOWN() throws ParserErrorException {
 		if (null == token)
-			throw new ParserErrorException(String.format("expected '%s' but 'EOF' found", UNKNOWN));
+			throw new ParserErrorException(String.format("parseUNKNOWN: expected '%s' but 'EOF' found", UNKNOWN));
 		if (!UNKNOWN.equals(token))
-			throw new ParserErrorException(String.format("expected '%s' but '%s' found", UNKNOWN, token));
+			throw new ParserErrorException(String.format("parseUNKNOWN: expected '%s' but '%s' found", UNKNOWN, token));
 		token = tokeniser.next();
 	}
 
