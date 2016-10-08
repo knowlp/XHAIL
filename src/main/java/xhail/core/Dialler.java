@@ -128,28 +128,35 @@ public class Dialler {
 	private final long budget;
 
 	private class Stream2Stream extends Thread {
+		String name;
 		InputStream i;
 		OutputStream o;
 							    
-		Stream2Stream(InputStream i, OutputStream o) {
+		Stream2Stream(String name, InputStream i, OutputStream o) {
+			this.name = name;
 			this.i = i;
 			this.o = o;
 		}
 
 		public void closeall() {
+			//System.err.println("Stream2Stream("+this.name+") closing");
 			// try to close both in every case
 			try { i.close(); } catch (Exception e) { }
 			try { o.close(); } catch (Exception e) { }
 		}
 
 		public void run() {
+			int totalread = 0;
 			try {
 				byte[] buffer = new byte[1024];
 				int read = 0;
 				while((read = i.read(buffer)) != -1) {
 							o.write(buffer, 0, read);
+							totalread += read;
 				}
+				//System.err.println(String.format("Stream2Stream("+this.name+") after reading %d bytes", totalread));
 			} catch (IOException e) {
+				Logger.warning("Stream2Stream("+this.name+") exception");
 				e.printStackTrace();  
 			}
 			closeall();
@@ -162,7 +169,7 @@ public class Dialler {
 		PrintStream o;
 
 		Stream2StreamLogging(InputStream i, PrintStream o, String what) {
-			super(i,o);
+			super(what, i, o);
 			this.starttime = System.nanoTime();
 			this.what = what;
 			this.o = o;
@@ -170,14 +177,18 @@ public class Dialler {
 
 		@Override
 		public void run() {
+			int totallines = 0;
 			try {
 				Scanner sc = new Scanner(this.i);
 				while (sc.hasNextLine()) {
 					String s = sc.nextLine();
 					Logger.message(String.format("[%s %.2f s] %s", this.what, (System.nanoTime()-starttime)/(1000.0*1000.0*1000.0), s));
 					this.o.println(s);
+					totallines += 1;
 				}
+				Logger.message(String.format("[%s %.2f s] end after %d lines", this.what, (System.nanoTime()-starttime)/(1000.0*1000.0)), totallines);
 			} catch (Exception e) {
+				Logger.warning("Stream2StreamLogging("+this.name+") exception");
 				e.printStackTrace();  
 			}
 			closeall();
@@ -244,14 +255,16 @@ public class Dialler {
 				handle(Files.newInputStream(errors));
 				try {
 					if (debug) {
-						Logger.message(String.format("*** Info  (%s): calling '%s'", Logger.SIGNATURE, String.join(" ", this.solver)));
+						Logger.message(String.format("*** Info  (%s): calling '%s' with budget %d", Logger.SIGNATURE, String.join(" ", this.solver), this.budget));
 					}
-					Process solver = new ProcessBuilder(this.solver).start();
+					Process solver = new ProcessBuilder(this.solver)
+						.redirectError(Redirect.INHERIT) // show stderr with xhail stderr
+						.start(); // start and return process
 
 					InputStream fis = new FileInputStream(middle.toFile());
 					// create thread that copies the contents of 'middle' to input of the solver
-					Thread middle2solver = new Stream2Stream(fis, solver.getOutputStream());
-					// start copying
+					Thread middle2solver = new Stream2Stream("middle2solver", fis, solver.getOutputStream());
+					// copy from grounder to solver
 					middle2solver.start();
 
 					// read from standard output and write to file
@@ -264,7 +277,7 @@ public class Dialler {
 						solver2output = new Stream2StreamLogging(sis, os, "slv");
 					} else {
 						// just copying
-						solver2output = new Stream2Stream(sis, os);
+						solver2output = new Stream2Stream("solver2output", sis, os);
 					}
 					solver2output.start();
 
@@ -280,6 +293,7 @@ public class Dialler {
 						solver.waitFor();
 					}
 					try {
+						//System.err.println("Dialler reading from target file '"+target+"'");
 						return Acquirer.from(Files.newInputStream(target)).parse();
 					} catch (IOException e) {
 						if (!output)
