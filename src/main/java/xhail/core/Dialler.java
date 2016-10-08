@@ -156,7 +156,7 @@ public class Dialler {
 				}
 				//System.err.println(String.format("Stream2Stream("+this.name+") after reading %d bytes", totalread));
 			} catch (IOException e) {
-				Logger.warning("Stream2Stream("+this.name+") exception");
+				Logger.message("Stream2Stream("+this.name+") exception");
 				e.printStackTrace();  
 			}
 			closeall();
@@ -186,9 +186,9 @@ public class Dialler {
 					this.o.println(s);
 					totallines += 1;
 				}
-				Logger.message(String.format("[%s %.2f s] end after %d lines", this.what, (System.nanoTime()-starttime)/(1000.0*1000.0)), totallines);
+				Logger.message(String.format("[%s %.2f s] end after %d lines", this.what, (System.nanoTime()-starttime)/(1000.0*1000.0*1000.0), totallines));
 			} catch (Exception e) {
-				Logger.warning("Stream2StreamLogging("+this.name+") exception");
+				Logger.message("Stream2StreamLogging("+this.name+") exception");
 				e.printStackTrace();  
 			}
 			closeall();
