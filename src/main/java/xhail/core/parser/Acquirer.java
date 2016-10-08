@@ -178,7 +178,6 @@ public class Acquirer {
 		if (!OPTIMIZATION.equals(token))
 			throw new ParserErrorException(String.format("expected '%s' but '%s' found", OPTIMIZATION, token));
 		token = tokeniser.next();
-		optimal = true;
 	}
 
 	private void parseOPTIMUM() throws ParserErrorException {
@@ -187,6 +186,7 @@ public class Acquirer {
 		if (!OPTIMUM.equals(token))
 			throw new ParserErrorException(String.format("parseOPTIMUM: expected '%s' but '%s' found", OPTIMUM, token));
 		token = tokeniser.next();
+		optimal = true;
 	}
 
 	private void parseSATISFIABLE() throws ParserErrorException {
