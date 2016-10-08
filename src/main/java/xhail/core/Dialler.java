@@ -289,9 +289,31 @@ public class Dialler {
 						// wait for specified time and then signal process (use suboptimal answer set)
 						// see http://stackoverflow.com/questions/37043114/how-to-stop-a-command-being-executed-after-4-5-seconds-through-process-builder
 						solver.waitFor(this.budget, TimeUnit.SECONDS);
-						solver.destroy();
-						solver.waitFor();
+
+						try {
+							int ex = solver.exitValue(); // throws if did not terminate
+
+							// wait a bit (250 ms) for grounder output to be sent
+							// (or for thread to die from io exception)
+							middle2solver.join(250);
+
+							// same for solver output to be processed
+							solver2output.join(250);
+						} catch(IllegalThreadStateException e) {
+							// thread did not terminate yet!
+							// really kill
+							solver.destroy();
+							solver.waitFor();
+						}
 					}
+					Logger.message(String.format("solver process ended with exit value %d!", solver.exitValue()));
+
+					// wait for grounder output to be sent (or for thread to die from io exception)
+					middle2solver.join();
+
+					// wait for solver output to be processed (or for thread to die from io exception)
+					solver2output.join();
+
 					try {
 						//System.err.println("Dialler reading from target file '"+target+"'");
 						return Acquirer.from(Files.newInputStream(target)).parse();
