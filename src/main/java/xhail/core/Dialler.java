@@ -301,6 +301,7 @@ public class Dialler {
 							solver2output.join(250);
 						} catch(IllegalThreadStateException e) {
 							// thread did not terminate yet!
+							Logger.message(String.format("solver process did not terminate, killing!"));
 							// really kill
 							solver.destroy();
 							solver.waitFor();
