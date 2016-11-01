@@ -232,6 +232,20 @@ public class Grounding implements Solvable {
 							clauseId, literalId, variables, clauseId, literalId, types));
 				}
 
+        // TODO: add modeB restriction how many literals can be used
+        for (ModeB mode : problem.getModeBs()) {
+          Scheme scheme = mode.getScheme();
+          if (mode.getUpper() != Integer.MAX_VALUE) {
+            // find out which literals are from this mode
+            Set<String> usedMode = new LinkedHashSet<>();
+            for (int literalId = 1; literalId <= literals.length; literalId++) {
+              Literal literal = literals[literalId];
+              if (SchemeTerm.subsumes(scheme, literal.getAtom(), facts)) {
+                Logger.message(String.format("found subsumption scheme %s \n literal %s \n facts %s", scheme.toString(), literal.toString(), facts.toString()));
+              }
+            }
+          }
+        }
 			}
 		}
 		return result.toArray(new String[result.size()]);
@@ -330,6 +344,7 @@ public class Grounding implements Solvable {
 
 	public final Clause[] getGeneralisation() {
 		if (null == generalisation) {
+      Logger.message("getGeneralization");
 			Set<Clause> set = new LinkedHashSet<>();
 			for (Clause clause : getKernel()) {
 				Map<Term, Variable> map = new HashMap<>();
@@ -358,6 +373,7 @@ public class Grounding implements Solvable {
 
 	public final Clause[] getKernel() {
 		if (null == kernel) {
+      Logger.message("getKernel");
 			Set<Clause> set = new LinkedHashSet<>();
 			for (Atom alpha : delta)
 				for (ModeH head : problem.getModeHs()) {
