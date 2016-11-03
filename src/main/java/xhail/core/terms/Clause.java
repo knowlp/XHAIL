@@ -7,6 +7,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.TreeSet;
+import java.util.Comparator;
 import java.util.Set;
 
 import org.apache.commons.collections4.iterators.ArrayIterator;
@@ -21,7 +23,14 @@ public class Clause implements Iterable<Literal> {
 
 	public static class Builder implements Buildable<Clause> {
 
-		private Set<Literal> body = new LinkedHashSet<>();
+    private class LiteralComparator implements Comparator<Literal> {
+      public int compare(Literal o1, Literal o2) {
+        return Integer.compare(o1.hashCode(), o2.hashCode());
+      }
+    }
+
+		//private Set<Literal> body = new LinkedHashSet<>();
+		private Set<Literal> body = new TreeSet<>(new LiteralComparator());
 
 		private Atom head = null;
 
