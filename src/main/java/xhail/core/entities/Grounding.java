@@ -236,17 +236,17 @@ public class Grounding implements Solvable {
         for (ModeB mode : problem.getModeBs()) {
           Scheme scheme = mode.getScheme();
           if (mode.getUpper() != Integer.MAX_VALUE) {
-            Logger.message(String.format("Grounding::asClauses checking ModeB %s scheme %s with limit %d", mode.toString(), scheme.toString(), mode.getUpper()));
+            //Logger.message(String.format("Grounding::asClauses checking ModeB %s scheme %s with limit %d", mode.toString(), scheme.toString(), mode.getUpper()));
             // find out which literals are from this mode and limit them
             Set<String> literalsToLimit = new LinkedHashSet<>();
             for (int literalId = 1; literalId <= literals.length; literalId++) {
               Literal literal = literals[literalId-1];
-              Logger.message(String.format("checking literal %s/atom %s", literal.toString(), literal.getAtom().toString()));
+              //Logger.message(String.format("checking literal %s/atom %s", literal.toString(), literal.getAtom().toString()));
               // XXX there is mode.isNegated(), scheme.isNegated(), literal.isNegated() but the second seems unused
               if (literal.isNegated() == mode.isNegated() && SchemeTerm.isMatching(scheme, literal.getAtom())) {
                 String limitLiteral = String.format("%d:use_clause_literal(%d,%d)", literalId, clauseId, literalId);
                 literalsToLimit.add(limitLiteral);
-                Logger.message("matching! added "+limitLiteral);
+                //Logger.message("matching! added "+limitLiteral);
               }
             }
             if( !literalsToLimit.isEmpty() ) {
@@ -354,7 +354,7 @@ public class Grounding implements Solvable {
 
 	public final Clause[] getGeneralisation() {
 		if (null == generalisation) {
-      Logger.message("getGeneralization");
+      //Logger.message("getGeneralization");
 			Set<Clause> set = new LinkedHashSet<>();
 			for (Clause clause : getKernel()) {
 				Map<Term, Variable> map = new HashMap<>();
@@ -383,7 +383,7 @@ public class Grounding implements Solvable {
 
 	public final Clause[] getKernel() {
 		if (null == kernel) {
-      Logger.message("getKernel");
+      //Logger.message("getKernel");
 			Set<Clause> set = new LinkedHashSet<>();
 			for (Atom alpha : delta)
 				for (ModeH head : problem.getModeHs()) {
@@ -551,8 +551,12 @@ public class Grounding implements Solvable {
         if (config.isDebug())
           Logger.message(String.format("*** Info  (%s): deduction with output %s", Logger.SIGNATURE, StringUtils.join(output, " ")));
 				Hypothesis hypothesis = Answers.timeDeduction(this, output);
-				if (config.isDebug())
-					Logger.message(String.format("*** Info  (%s): found Hypothesis: %s", Logger.SIGNATURE, StringUtils.join(hypothesis.getHypotheses(), " ")));
+				if (config.isDebug()) {
+          //Logger.message(String.format("*** Info  (%s): found hypothesis: %s", Logger.SIGNATURE, StringUtils.join(hypothesis.getHypotheses(), " ")));
+          for(Clause c : hypothesis.getHypotheses()) {
+            Logger.message(String.format("*** Info  (%s): hypothesis clause: %s", Logger.SIGNATURE, c.toString()));
+          }
+        }
 				builder.put(entry.getKey(), new Answer.Builder(this).setHypothesis(hypothesis).build());
 			}
 		} else

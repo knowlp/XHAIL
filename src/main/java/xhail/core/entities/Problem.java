@@ -506,12 +506,17 @@ public class Problem implements Solvable {
 					if (config.isDebug()) {
 						Logger.message(String.format("*** Info  (%s): found Delta: %s", Logger.SIGNATURE, StringUtils.join(grounding.getDelta(), " ")));
 						Logger.message(String.format("*** Info  (%s): found Kernel: %s", Logger.SIGNATURE, StringUtils.join(grounding.getKernel(), " ")));
-						Logger.message(String.format("*** Info  (%s): found Generalisation: %s", Logger.SIGNATURE, StringUtils.join(grounding.getGeneralisation(), " ")));
+						//Logger.message(String.format("*** Info  (%s): found Generalisation: %s", Logger.SIGNATURE, StringUtils.join(grounding.getGeneralisation(), " ")));
 						if (grounding.needsInduction())
 							Utils.saveTemp(grounding, iter, Paths.get(String.format("%s_abd%d_ind%d.lp", config.getName(), iter, iit++)));
 					}
 					Set<Clause> generalisation = new HashSet<Clause>();
 					Collections.addAll(generalisation, grounding.getGeneralisation());
+					if (config.isDebug()) {
+            for(Clause c : generalisation) {
+              Logger.message(String.format("*** Info  (%s): generalization clause: %s", Logger.SIGNATURE, c.toString()));
+            }
+          }
 					if (!generalisations.contains(generalisation)) {
 						values = grounding.solve(values, builder);
 						// always add refinements, hopefully it won't be used!

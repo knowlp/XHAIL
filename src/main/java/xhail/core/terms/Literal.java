@@ -4,6 +4,7 @@
 package xhail.core.terms;
 
 import xhail.core.Buildable;
+import xhail.core.Logger;
 
 /**
  * @author stefano
@@ -121,6 +122,7 @@ public class Literal implements Comparable<Literal> {
 		result = prime * result + ((atom == null) ? 0 : atom.hashCode());
 		result = prime * result + level;
 		result = prime * result + (negated ? 1231 : 1237);
+    //Logger.message(String.format("hash code of literal '%s' is %d", toString(), result));
 		return result;
 	}
 

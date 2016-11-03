@@ -14,6 +14,7 @@ import java.util.Set;
 import org.apache.commons.collections4.iterators.ArrayIterator;
 
 import xhail.core.Buildable;
+import xhail.core.Logger;
 
 /**
  * @author stefano
@@ -270,6 +271,7 @@ public class Atom implements Term, Iterable<Atom>, Comparable<Atom> {
 		result = prime * result + ((scheme == null) ? 0 : scheme.hashCode());
 		result = prime * result + Arrays.hashCode(terms);
 		result = prime * result + weight;
+    //Logger.message(String.format("hash code of atom '%s' is %d", toString(), result));
 		return result;
 	}
 
