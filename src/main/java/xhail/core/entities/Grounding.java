@@ -236,13 +236,22 @@ public class Grounding implements Solvable {
         for (ModeB mode : problem.getModeBs()) {
           Scheme scheme = mode.getScheme();
           if (mode.getUpper() != Integer.MAX_VALUE) {
-            // find out which literals are from this mode
-            Set<String> usedMode = new LinkedHashSet<>();
+            Logger.message(String.format("Grounding::asClauses checking ModeB %s scheme %s with limit %d", mode.toString(), scheme.toString(), mode.getUpper()));
+            // find out which literals are from this mode and limit them
+            Set<String> literalsToLimit = new LinkedHashSet<>();
             for (int literalId = 1; literalId <= literals.length; literalId++) {
-              Literal literal = literals[literalId];
-              if (SchemeTerm.subsumes(scheme, literal.getAtom(), facts)) {
-                Logger.message(String.format("found subsumption scheme %s \n literal %s \n facts %s", scheme.toString(), literal.toString(), facts.toString()));
+              Literal literal = literals[literalId-1];
+              Logger.message(String.format("checking literal %s/atom %s", literal.toString(), literal.getAtom().toString()));
+              if (SchemeTerm.isMatching(scheme, literal.getAtom())) {
+                String limitLiteral = String.format("%d:use_clause_literal(%d,%d)", literalId, clauseId, literalId);
+                literalsToLimit.add(limitLiteral);
+                Logger.message("matching! added "+limitLiteral);
               }
+            }
+            if( !literalsToLimit.isEmpty() ) {
+              // need to apply modeB restriction (cannot use more than <limit> at once)
+              result.add(String.format(":- %d < #count { %s }.",
+                  mode.getUpper(), StringUtils.join(literalsToLimit, ";")));
             }
           }
         }
