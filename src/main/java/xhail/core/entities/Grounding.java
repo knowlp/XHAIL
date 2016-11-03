@@ -242,7 +242,8 @@ public class Grounding implements Solvable {
             for (int literalId = 1; literalId <= literals.length; literalId++) {
               Literal literal = literals[literalId-1];
               Logger.message(String.format("checking literal %s/atom %s", literal.toString(), literal.getAtom().toString()));
-              if (SchemeTerm.isMatching(scheme, literal.getAtom())) {
+              // XXX there is mode.isNegated(), scheme.isNegated(), literal.isNegated() but the second seems unused
+              if (literal.isNegated() == mode.isNegated() && SchemeTerm.isMatching(scheme, literal.getAtom())) {
                 String limitLiteral = String.format("%d:use_clause_literal(%d,%d)", literalId, clauseId, literalId);
                 literalsToLimit.add(limitLiteral);
                 Logger.message("matching! added "+limitLiteral);
