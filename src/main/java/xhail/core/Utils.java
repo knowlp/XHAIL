@@ -60,7 +60,7 @@ public class Utils {
 			}
 			return true;
 		} catch (Exception e) {
-			Logger.error("cannot stream data to process");
+      Logger.error("dump: cannot stream data to processes:" + e.toString());
 		}
 		return false;
 	}
@@ -97,7 +97,7 @@ public class Utils {
 			printer.close();
 			return true;
 		} catch (Exception e) {
-			Logger.error("cannot stream data to process");
+      Logger.error("save(Grounding): cannot stream data to processes:" + e.toString());
 		}
 		return false;
 	}
@@ -142,7 +142,7 @@ public class Utils {
 			printer.close();
 			return true;
 		} catch (Exception e) {
-			Logger.error("cannot stream data to process");
+      Logger.error("save(Problem): cannot stream data to processes:" + e.toString());
 		}
 		return false;
 	}

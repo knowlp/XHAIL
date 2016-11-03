@@ -88,7 +88,7 @@ public class Dialler {
 				this.errors = Files.createTempFile("xhail", ".tmp");
 				//this.errors.toFile().deleteOnExit();
 			} catch (Exception e) {
-				Logger.error("cannot send data to processes");
+				Logger.error("cannot send data to processes:" + e.toString());
 			}
 			return new Dialler(this);
 		}
