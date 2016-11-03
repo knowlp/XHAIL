@@ -232,7 +232,7 @@ public class Grounding implements Solvable {
 							clauseId, literalId, variables, clauseId, literalId, types));
 				}
 
-        // TODO: add modeB restriction how many literals can be used
+        // For modeB count restrictions, add constraints to limit how many literals are used in solutions
         for (ModeB mode : problem.getModeBs()) {
           Scheme scheme = mode.getScheme();
           if (mode.getUpper() != Integer.MAX_VALUE) {
