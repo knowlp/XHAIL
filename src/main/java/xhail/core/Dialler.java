@@ -307,7 +307,9 @@ public class Dialler {
 							solver.waitFor();
 						}
 					}
-					Logger.message(String.format("solver process ended with exit value %d!", solver.exitValue()));
+					if( solver.exitValue() != 30 || debug ) {
+						Logger.message(String.format("solver process ended with exit value %d (expect 30)!", solver.exitValue()));
+					}
 
 					// wait for grounder output to be sent (or for thread to die from io exception)
 					middle2solver.join();
