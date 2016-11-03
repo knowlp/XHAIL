@@ -173,8 +173,11 @@ public class Example {
 //		String bool = negated ? "true" : "false";
 		String[] result = new String[defeasible ? 2 : 3];
 		result[0] = String.format("%% %s", toString());
+    // before: maximize (number of positive atoms * weight - number of negative atoms * weight)
 		//result[1] = String.format("#maximize[ %s%s =%d @%d ].", yes, atom, weight, priority);
-		result[1] = String.format(":~ %s%s. [-%d@%d,%s]", yes, atom, weight, priority, atom);
+    // now: positive example makes a cost if it is not there
+    // now: negative example makes a cost if it is there
+		result[1] = String.format(":~ %s%s. [%d@%d,%s]", not, atom, weight, priority+1, atom);
 		if (!defeasible)
 			result[2] = String.format(":-%s%s.", not, atom);
 //		result[result.length - 2] = String.format("covered_example(%s,%s):-%s%s.", bool, atom, yes, atom);
