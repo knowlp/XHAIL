@@ -151,6 +151,8 @@ public class Grounding implements Solvable {
 
 	private final Literal[] uncovered;
 
+  private final int BASEPRIO = 0; // see also Modeh.java, add this to weak constraint priority
+
 	private Grounding(Builder builder) {
 		if (null == builder)
 			throw new IllegalArgumentException("Illegal 'builder' argument in Grounding(Grounding.Builder): " + builder);
@@ -199,14 +201,14 @@ public class Grounding implements Solvable {
 
 				Atom head = clauses[clauseId].getHead();
 				//result.add(String.format("#minimize[ use_clause_literal(%d,0) =%d @%d ].", clauseId, head.getWeight(), head.getPriority()));
-				result.add(String.format(":~ use_clause_literal(%d,0). [%d@%d,%d]", clauseId, head.getWeight(), head.getPriority(), clauseId));
+				result.add(String.format(":~ use_clause_literal(%d,0). [%d@%d,%d]", clauseId, head.getWeight(), head.getPriority()+BASEPRIO, clauseId));
 
 				for (int literalId = 1; literalId <= literals.length; literalId++)
 					//result.add(String.format("#minimize[ use_clause_literal(%d,%d) =%d @%d ].", clauseId, literalId, //
 					//		literals[literalId - 1].getWeight(), literals[literalId - 1].getPriority()));
 					result.add(String.format(":~ use_clause_literal(%d,%d). [%d@%d,use_clause_literal(%d,%d)]",
 						clauseId, literalId,
-						literals[literalId - 1].getWeight(), literals[literalId - 1].getPriority(),
+						literals[literalId - 1].getWeight(), literals[literalId - 1].getPriority()+BASEPRIO,
 						clauseId, literalId));
 
 				Set<String> set = new LinkedHashSet<>();
