@@ -186,29 +186,42 @@ public class Application implements Callable<Answers> {
 				if (found)
 					Logger.found(config);
 			}
-			Finder cfinder = new Finder(" 2.0", "wasp");
-			cfinder.test("wasp", config.getClasp());
-			if (!cfinder.isFound() && config.isSearch()) {
+			Finder wfinder = new Finder(" 2.0", "wasp");
+			wfinder.test("wasp", config.getClasp());
+			if (!wfinder.isFound() && config.isSearch()) {
 				Logger.message("Locating wasp ...");
+				boolean found = false;
+				for (int i = 0; !found && i < PATHS.length; i++)
+					found = wfinder.find(PATHS[i], false);
+				// XXX searching / might not be the perfect idea, how about using something like environment PATH?
+				if (!found)
+					found = wfinder.find(ROOT, true);
+				config.setClasp(wfinder.get("wasp"));
+				if (found)
+					Logger.found(config);
+			}
+			Finder cfinder = new Finder("3.2", "clasp");
+			cfinder.test("clasp", config.getClasp());
+			if (!cfinder.isFound() && config.isSearch()) {
+				Logger.message("Locating clasp ...");
 				boolean found = false;
 				for (int i = 0; !found && i < PATHS.length; i++)
 					found = cfinder.find(PATHS[i], false);
 				// XXX searching / might not be the perfect idea, how about using something like environment PATH?
 				if (!found)
 					found = cfinder.find(ROOT, true);
-				config.setClasp(cfinder.get("wasp"));
+				config.setClasp(cfinder.get("clasp"));
 				if (found)
 					Logger.found(config);
 			}
-			if (!gfinder.isFound() || !cfinder.isFound()) {
+			if (!gfinder.isFound() || (!cfinder.isFound() && !wfinder.isFound())) {
 				String message = "";
 				if (null == gfinder.get("gringo"))
-					message += String.format("'gringo v4.*' needed to run %s", Logger.SIGNATURE);
-				if (null == cfinder.get("wasp"))
-					if (message.isEmpty())
-						message += String.format("'wasp 2.0' needed to run %s", Logger.SIGNATURE);
-					else
-						message += String.format("\n*** ERROR (%s): 'wasp 2.0' needed to run %s", Logger.SIGNATURE, Logger.SIGNATURE);
+					message += String.format("'gringo v4.*' needed to run %s ", Logger.SIGNATURE);
+				if (null == wfinder.get("wasp"))
+					message += String.format("'wasp 2.0' needed to run %s ", Logger.SIGNATURE);
+				if (null == cfinder.get("clasp"))
+					message += String.format("'clasp 3.1' needed to run %s ", Logger.SIGNATURE);
 				Logger.error(message);
 			}
 		}

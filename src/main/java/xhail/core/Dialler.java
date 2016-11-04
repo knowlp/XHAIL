@@ -200,16 +200,19 @@ public class Dialler {
 			throw new IllegalArgumentException("Illegal 'builder' argument in Dialler(Byprocess.Builder): " + builder);
 
 		ArrayList<String> solverCmd = new ArrayList<String>();
-		solverCmd.add(builder.config.getClasp().toAbsolutePath().toString());
-		if (false) {
+		String solverString = builder.config.getClasp().toAbsolutePath().toString();
+		solverCmd.add(solverString);
+		if (!solverString.contains("wasp")) {
 			// clasp options
 			solverCmd.add("--verbose=0");
 			solverCmd.add("--opt-mode=optN");
-			solverCmd.add("--opt-strategy=usc,7");
+			//solverCmd.add("--opt-strategy=usc,1");
+			solverCmd.add("--opt-strategy=bb");
 			solverCmd.add("--configuration=handy");
 			if (null != builder.values)
 				solverCmd.add("--opt-bound=" + builder.values.toString());
 		} else {
+			// wasp options
 			// works with git version 1c1d45 and above
 			solverCmd.add("--minisat-policy");
 			//solverCmd.add("--weakconstraints-algorithm=one");
@@ -219,6 +222,8 @@ public class Dialler {
 			solverCmd.add("--shrinking-strategy=progression");
 			solverCmd.add("--shrinking-budget=30"); // maybe increase this for really big instances?
 			solverCmd.add("--silent=0"); // very important for parseable output
+			if (null != builder.values)
+				Logger.message("wasp does not support preset of cost function!");
 		}
 		this.solver = solverCmd.toArray(new String[solverCmd.size()]);
 

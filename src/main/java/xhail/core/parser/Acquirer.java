@@ -117,13 +117,20 @@ public class Acquirer {
 //			throw new ParserErrorException(String.format("expected ATOM but '%s' found", token));
 		this.atoms = new HashSet<>();
 		while (null != token && !FOUND.equals(token) && !COST.equals(token) && !OPTIMUM.equals(token) && !SATISFIABLE.equals(token)
-				&& !UNKNOWN.equals(token) && !UNSATISFIABLE.equals(token)) {
+				&& !UNKNOWN.equals(token) && !UNSATISFIABLE.equals(token) && !OPTIMIZATION.equals(token)) {
 			if (!"{}".equals(token))
 				atoms.add(cleanToken(token));
 			token = tokeniser.next();
 		}
-		parseCOST();
-		parseValues();
+		if( OPTIMIZATION.equals(token) ) {
+			// clasp
+			parseOPTIMIZATION();
+			parseValues();
+		} else {
+			// wasp
+			parseCOST();
+			parseValues();
+		}
 	}
 
 	private void parseEOF() throws ParserErrorException {
@@ -164,12 +171,19 @@ public class Acquirer {
 //			throw new ParserErrorException(String.format("expected ATOM but '%s' found", token));
 		this.atoms = new HashSet<>();
 		while (null != token && !FOUND.equals(token) && !COST.equals(token) && !OPTIMUM.equals(token) && !SATISFIABLE.equals(token)
-				&& !UNKNOWN.equals(token) && !UNSATISFIABLE.equals(token)) {
+				&& !UNKNOWN.equals(token) && !UNSATISFIABLE.equals(token) && !OPTIMIZATION.equals(token)) {
 			atoms.add(cleanToken(token));
 			token = tokeniser.next();
 		}
-		parseCOST();
-		parseValues();
+		if( OPTIMIZATION.equals(token) ) {
+			// clasp
+			parseOPTIMIZATION();
+			parseValues();
+		} else {
+			// wasp
+			parseCOST();
+			parseValues();
+		}
 	}
 
 	private void parseOPTIMIZATION() throws ParserErrorException {
@@ -240,6 +254,8 @@ public class Acquirer {
 		if (token != null) {
 			if (OPTIMUM.equals(token)) {
 				parseOPTIMUM();
+				if (FOUND.equals(token))
+					parseFOUND();
 			} else {
 				parseNested();
 			}
