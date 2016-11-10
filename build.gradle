@@ -25,7 +25,8 @@ jar {
     	} 
     }
     archiveName = baseName + '.' + extension
-    destinationDir = project.file('/usr/local/' + rootProject.name + '-' + version + '/')
+    //destinationDir = project.file('/usr/local/' + rootProject.name + '-' + version + '/')
+    destinationDir = project.file('.')
 }
 
 repositories {
