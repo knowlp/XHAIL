@@ -387,22 +387,32 @@ public class Grounding implements Solvable {
 		if (null == kernel) {
       //Logger.message("getKernel");
 			Set<Clause> set = new LinkedHashSet<>();
-			for (Atom alpha : delta)
+			for (Atom alpha : delta) {
+        Logger.message("getKernel for alpha " + alpha);
 				for (ModeH head : problem.getModeHs()) {
 					Scheme scheme = head.getScheme();
 					if (SchemeTerm.subsumes(scheme, alpha, facts)) {
+            Logger.message("  building clauses for head "+head.toString());
 						Clause.Builder builder = new Clause.Builder().setHead(//
 								new Atom.Builder(alpha).setWeight(head.getWeigth()).setPriority(head.getPriority()).build());
 
 						Collection<Term> substitutes = SchemeTerm.findSubstitutes(scheme, alpha);
 						if (null != substitutes) {
+              Logger.message("  substitutes "+StringUtils.join(substitutes, " "));
 							int level = 0;
 							Set<Term> usables = new HashSet<>(substitutes);
 							Set<Term> used = new HashSet<Term>();
 							Set<Term> next = new HashSet<Term>();
+              Map<ModeB,Integer> canUse = new HashMap<ModeB,Integer>();
 							while (!usables.isEmpty()) {
+                Logger.message("    usables "+StringUtils.join(usables, " "));
 								level += 1;
 								for (ModeB mode : problem.getModeBs()) {
+                  Integer canUseThis = canUse.get(mode);
+                  if (canUseThis == null)
+                    canUseThis = mode.getUpper();
+                  if (canUseThis <= 0)
+                    continue;
 									scheme = mode.getScheme();
 									if (mode.isNegated()) {
 										Map<Atom, Collection<Term>> found = SchemeTerm.generateAndOutput(scheme, usables, table, facts);
@@ -411,15 +421,32 @@ public class Grounding implements Solvable {
 													new Atom.Builder(atom).setWeight(mode.getWeigth()).setPriority(mode.getPriority()).build() //
 											).setNegated(mode.isNegated()).setLevel(level).build());
 											next.addAll(found.get(atom));
+                      canUseThis -= 1;
+                      if (canUseThis <= 0)
+                        break;
 										}
 									} else {
-										Map.Entry<Collection<Atom>, Collection<Term>> found = SchemeTerm.matchAndOutput(scheme, table.get(scheme), usables);
-										for (Atom atom : found.getKey())
+										//Map.Entry<Collection<Atom>, Collection<Term>> found = SchemeTerm.matchAndOutput(scheme, table.get(scheme), usables);
+										//for (Atom atom : found.getKey()) {
+										//	builder.addLiteral(new Literal.Builder( //
+										//			new Atom.Builder(atom).setWeight(mode.getWeigth()).setPriority(mode.getPriority()).build() //
+										//	).setNegated(mode.isNegated()).setLevel(level).build());
+                    //}
+                    //next.addAll(found.getValue());
+
+										Collection<Map.Entry<Atom, Collection<Term>>> found = SchemeTerm.matchAndOutput2(scheme, table.get(scheme), usables);
+                    for(Map.Entry<Atom, Collection<Term>> entry : found) {
+                      Logger.message("    modeb "+mode+" found entry "+entry.getKey()+" => "+StringUtils.join(entry.getValue(), " "));
 											builder.addLiteral(new Literal.Builder( //
-													new Atom.Builder(atom).setWeight(mode.getWeigth()).setPriority(mode.getPriority()).build() //
-											).setNegated(mode.isNegated()).setLevel(level).build());
-										next.addAll(found.getValue());
+													new Atom.Builder(entry.getKey()).setWeight(mode.getWeigth()).setPriority(mode.getPriority()).build() //
+										  ).setNegated(mode.isNegated()).setLevel(level).build());
+                      next.addAll(entry.getValue());
+                      canUseThis -= 1;
+                      if (canUseThis <= 0)
+                        break;
+                    }
 									}
+                  canUse.put(mode, canUseThis);
 								}
 								used.addAll(usables);
 								next.removeAll(used);
@@ -431,6 +458,7 @@ public class Grounding implements Solvable {
 						set.add(builder.build());
 					}
 				}
+      }
 			kernel = set.toArray(new Clause[set.size()]);
 		}
 		return kernel;
@@ -543,7 +571,8 @@ public class Grounding implements Solvable {
 		Values result = values;
 		if (this.needsInduction()) {
       if (config.isDebug())
-        Logger.message(String.format("*** Info  (%s): need induction with this %s", Logger.SIGNATURE, this.toString()));
+        //Logger.message(String.format("*** Info  (%s): need induction with this %s", Logger.SIGNATURE, this.toString()));
+        Logger.message(String.format("*** Info  (%s): need induction", Logger.SIGNATURE));
 			Dialler dialler = new Dialler.Builder(config, this, values).build();
 			Map.Entry<Values, Collection<Collection<String>>> entry = Answers.timeInduction(1, dialler);
 			result = entry.getKey();

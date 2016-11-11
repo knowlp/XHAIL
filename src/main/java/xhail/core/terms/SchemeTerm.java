@@ -6,6 +6,7 @@ package xhail.core.terms;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -145,6 +146,26 @@ public interface SchemeTerm {
 			}
 		}
 		return new SimpleEntry<Collection<Atom>, Collection<Term>>(matches, outputs);
+	}
+
+	public static Collection<Map.Entry<Atom, Collection<Term>>> matchAndOutput2(Scheme scheme, Collection<Atom> atoms, Collection<Term> substitutes) {
+		if (null == scheme)
+			throw new IllegalArgumentException("Illegal 'scheme' argument in SchemeTerm.matchAndOutput(Scheme, Collection<Atom>, Collection<Term>): " + scheme);
+		if (null == atoms)
+			throw new IllegalArgumentException("Illegal 'atoms' argument in SchemeTerm.matchAndOutput(Scheme, Collection<Atom>, Collection<Term>): " + atoms);
+		if (null == substitutes)
+			throw new IllegalArgumentException("Illegal 'substitutes' argument in SchemeTerm.matchAndOutput(Scheme, Collection<Atom>, Collection<Term>): "
+					+ substitutes);
+		Set<Atom> matches = new HashSet<>();
+		Set<Term> outputs = new HashSet<>();
+    Collection<Map.Entry<Atom, Collection<Term>>> result = new LinkedList<Map.Entry<Atom, Collection<Term>>>();
+		for (Atom atom : atoms) {
+			Collection<Term> output = matchAndOutput(scheme, atom, substitutes);
+			if (null != output) {
+        result.add(new SimpleEntry<Atom, Collection<Term>>(atom, output));
+			}
+		}
+		return result;
 	}
 
 	public static Collection<Term> matchAndOutput(Scheme scheme, Atom atom, Collection<Term> substitutes) {

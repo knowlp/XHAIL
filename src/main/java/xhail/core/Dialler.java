@@ -213,8 +213,8 @@ public class Dialler {
 				solverCmd.add("--opt-bound=" + builder.values.toString());
 		} else {
 			// wasp options
-			// works with git version 1c1d45 and above
-			solverCmd.add("--minisat-policy");
+			//solverCmd.add("--minisat-policy"); // with git version 1c1d45 and above
+			solverCmd.add("--heuristic-minisat"); // latest git version
 			//solverCmd.add("--weakconstraints-algorithm=one");
 			solverCmd.add("--enable-disjcores");
 			solverCmd.add("--trim-core");
