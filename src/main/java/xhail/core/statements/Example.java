@@ -177,7 +177,7 @@ public class Example {
 		//result[1] = String.format("#maximize[ %s%s =%d @%d ].", yes, atom, weight, priority);
     // now: positive example makes a cost if it is not there
     // now: negative example makes a cost if it is there
-		result[1] = String.format(":~ %s%s. [%d@%d,%s]", not, atom, weight, priority+1, atom);
+		result[1] = String.format(":~ %s%s. [%d@%d,%s]", not, atom, weight, priority, atom);
 		if (!defeasible)
 			result[2] = String.format(":-%s%s.", not, atom);
 //		result[result.length - 2] = String.format("covered_example(%s,%s):-%s%s.", bool, atom, yes, atom);
