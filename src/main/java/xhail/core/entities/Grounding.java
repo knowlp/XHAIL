@@ -12,6 +12,7 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.TreeMap;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -357,7 +358,7 @@ public class Grounding implements Solvable {
 	public final Clause[] getGeneralisation() {
 		if (null == generalisation) {
       //Logger.message("getGeneralization");
-			Set<Clause> set = new LinkedHashSet<>();
+			Map<Clause,Integer> set = new HashMap<>();
 			for (Clause clause : getKernel()) {
 				Map<Term, Variable> map = new HashMap<>();
 				Clause.Builder builder = new Clause.Builder();
@@ -376,9 +377,16 @@ public class Grounding implements Solvable {
 									.setLevel(literal.getLevel()).build());
 					}
 				}
-				set.add(builder.build());
+
+				//set.add(builder.build());
+
+				if (set.containsKey(clause)) {
+				    set.put(clause, set.get(clause) + 1);
+				} else {
+				    set.put(clause, 1);
+				}
 			}
-			generalisation = set.toArray(new Clause[set.size()]);
+			generalisation = set.keySet().toArray(new Clause[set.size()]);
 		}
 		return generalisation;
 	}
