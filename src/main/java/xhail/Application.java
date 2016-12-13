@@ -147,6 +147,13 @@ public class Application implements Callable<Answers> {
 					case "--version":
 						builder.setVersion(true);
 						break;
+					case "-P":
+					case "--prune":
+						if (args.length - i <= 1)
+							builder.missingParameter();
+						else
+							builder.setPrune(args[++i]);
+						break;
 
 					default:
 						builder.addSource(args[i]);

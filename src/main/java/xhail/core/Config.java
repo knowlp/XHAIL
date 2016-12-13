@@ -27,6 +27,7 @@ public class Config {
 		private int iterations = 0;
 		private long kill = 0L;
 		private long budget = 0L;
+		private long prune = 0L;
 		private boolean mute = false;
 		private boolean output = false;
 		private boolean prettify = false;
@@ -139,6 +140,15 @@ public class Config {
 			return this;
 		}
 
+		public Builder setPrune(String prune) {
+			try {
+				this.prune = Long.parseUnsignedLong(prune);
+			} catch (NullPointerException | NumberFormatException e) {
+				errors += String.format("  '%s' is not a valid pruning integer\n", prune);
+			}
+			return this;
+		}
+
 		public Builder setMute(boolean mute) {
 			this.mute = mute;
 			return this;
@@ -191,6 +201,8 @@ public class Config {
   
 	private final long budget;
 
+	private final long prune;
+
 	private final boolean mute;
 
 	private final String name;
@@ -220,6 +232,7 @@ public class Config {
 		this.help = builder.help;
 		this.kill = builder.kill;
 		this.budget = builder.budget;
+		this.prune = builder.prune;
 		String name = "stdin";
 		if (builder.sources.size() > 0) {
 			name = builder.sources.iterator().next().getFileName().toString();
@@ -257,6 +270,10 @@ public class Config {
 
 	public final long getBudget() {
 		return budget;
+	}
+
+	public final long getPrune() {
+		return prune;
 	}
 
 	public final String getName() {
