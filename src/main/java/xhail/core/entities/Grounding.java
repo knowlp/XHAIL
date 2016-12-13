@@ -393,7 +393,7 @@ public class Grounding implements Solvable {
 
 	public final Clause[] getKernel() {
 		if (null == kernel) {
-      //Logger.message("getKernel");
+			//Logger.message("getKernel");
 			Set<Clause> set = new LinkedHashSet<>();
 			for (Atom alpha : delta)
 				for (ModeH head : problem.getModeHs()) {
@@ -550,23 +550,23 @@ public class Grounding implements Solvable {
 			throw new IllegalArgumentException("Illegal 'builder' argument in Grounding.solve(int, Values, Answers.Builder): " + builder);
 		Values result = values;
 		if (this.needsInduction()) {
-      if (config.isDebug())
-        Logger.message(String.format("*** Info  (%s): need induction with this %s", Logger.SIGNATURE, this.toString()));
+			if (config.isDebug())
+				Logger.message(String.format("*** Info  (%s): need induction with this %s", Logger.SIGNATURE, this.toString()));
 			Dialler dialler = new Dialler.Builder(config, this, values).build();
 			Map.Entry<Values, Collection<Collection<String>>> entry = Answers.timeInduction(1, dialler);
 			result = entry.getKey();
 			for (Collection<String> output : entry.getValue()) {
 				if (builder.size() > 0 && config.isTerminate())
 					break;
-        if (config.isDebug())
-          Logger.message(String.format("*** Info  (%s): deduction with output %s", Logger.SIGNATURE, StringUtils.join(output, " ")));
+				if (config.isDebug())
+					Logger.message(String.format("*** Info  (%s): deduction with output %s", Logger.SIGNATURE, StringUtils.join(output, " ")));
 				Hypothesis hypothesis = Answers.timeDeduction(this, output);
 				if (config.isDebug()) {
-          //Logger.message(String.format("*** Info  (%s): found hypothesis: %s", Logger.SIGNATURE, StringUtils.join(hypothesis.getHypotheses(), " ")));
-          for(Clause c : hypothesis.getHypotheses()) {
-            Logger.message(String.format("*** Info  (%s): hypothesis clause: %s", Logger.SIGNATURE, c.toString()));
-          }
-        }
+					//Logger.message(String.format("*** Info  (%s): found hypothesis: %s", Logger.SIGNATURE, StringUtils.join(hypothesis.getHypotheses(), " ")));
+					for(Clause c : hypothesis.getHypotheses()) {
+						Logger.message(String.format("*** Info  (%s): hypothesis clause: %s", Logger.SIGNATURE, c.toString()));
+					}
+				}
 				builder.put(entry.getKey(), new Answer.Builder(this).setHypothesis(hypothesis).build());
 			}
 		} else
@@ -575,10 +575,10 @@ public class Grounding implements Solvable {
 	}
 
 	@Override
-	public String toString() {
-		return "Grounding [\n  covered=" + Arrays.toString(covered) + ",\n  delta=" + Arrays.toString(delta) + ",\n  facts=" + facts + ",\n  generalisation="
+		public String toString() {
+			return "Grounding [\n  covered=" + Arrays.toString(covered) + ",\n  delta=" + Arrays.toString(delta) + ",\n  facts=" + facts + ",\n  generalisation="
 				+ Arrays.toString(generalisation) + ",\n  kernel=" + Arrays.toString(kernel) + ",\n  model=" + Arrays.toString(model) + ",\n  table=" + table
 				+ ",\n  problem=" + problem + ",\n  uncovered=" + Arrays.toString(uncovered) + "\n]";
-	}
+		}
 
 }
