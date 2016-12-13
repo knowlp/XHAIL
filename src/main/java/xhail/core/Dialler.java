@@ -219,6 +219,9 @@ public class Dialler {
 			solverCmd.add("--enable-disjcores");
 			solverCmd.add("--trim-core");
 			solverCmd.add("--compute-firstmodel=30");
+			//solverCmd.add("--weakconstraints-algorithm=interleaving-choices");
+			//solverCmd.add("--weakconstraints-algorithm=interleaving-restarts");
+			solverCmd.add("--printbounds");
 			solverCmd.add("--shrinking-strategy=progression");
 			solverCmd.add("--shrinking-budget=30"); // maybe increase this for really big instances?
 			solverCmd.add("--silent=0"); // very important for parseable output

@@ -144,6 +144,14 @@ public class Acquirer {
 		if (!COST.equals(token))
 			throw new ParserErrorException(String.format("expected '%s' but '%s' found", COST, token));
 		token = tokeniser.next();
+		// if this cost is a bound, skip it and expect a real cost (with value) 
+		while ("LB:".equals(token) || "UB:".equals(token)) {
+			token = tokeniser.next(); // skip LB / UB
+			token = tokeniser.next(); // skip bound value
+			if (!COST.equals(token))
+				throw new ParserErrorException(String.format("expected '%s' but '%s' found in loop", COST, token));
+			token = tokeniser.next();
+		}
 	}
 
 	private void parseCOSTSHRINK() throws ParserErrorException {
@@ -152,7 +160,10 @@ public class Acquirer {
 		if (!COST.equals(token))
 			throw new ParserErrorException(String.format("expected '%s' but '%s' found", COST, token));
 		token = tokeniser.next();
-		token = tokeniser.next();
+		if ("LB:".equals(token) || "UB:".equals(token)) {
+			token = tokeniser.next(); // skip LB / UB
+		}
+		token = tokeniser.next(); // skip value
 	}
 
 	private void parseFOUND() throws ParserErrorException {
