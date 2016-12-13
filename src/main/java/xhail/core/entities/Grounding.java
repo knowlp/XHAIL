@@ -13,6 +13,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.TreeMap;
+import java.util.Iterator;
+import java.lang.Math;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -358,7 +360,8 @@ public class Grounding implements Solvable {
 	public final Clause[] getGeneralisation() {
 		if (null == generalisation) {
       //Logger.message("getGeneralization");
-			Map<Clause,Integer> set = new HashMap<>();
+			Map<Clause,Integer> gmap = new HashMap<>();
+			Integer largestSupport = 0;
 			for (Clause clause : getKernel()) {
 				Map<Term, Variable> map = new HashMap<>();
 				Clause.Builder builder = new Clause.Builder();
@@ -378,15 +381,31 @@ public class Grounding implements Solvable {
 					}
 				}
 
-				//set.add(builder.build());
-
-				if (set.containsKey(clause)) {
-				    set.put(clause, set.get(clause) + 1);
+				Clause genClause = builder.build();
+				//set.add(genClause);
+				if (gmap.containsKey(genClause)) {
+					Integer newsup = gmap.get(genClause) + 1;
+					largestSupport = Math.max(largestSupport, newsup);
+					gmap.put(genClause, newsup);
 				} else {
-				    set.put(clause, 1);
+				    gmap.put(genClause, 1);
 				}
 			}
-			generalisation = set.keySet().toArray(new Clause[set.size()]);
+			Iterator it = gmap.entrySet().iterator();
+			while(it.hasNext()) {
+				Map.Entry<Clause, Integer> entry = (Map.Entry<Clause, Integer>)it.next();
+				String msg = "";
+				long prune = problem.getConfig().getPrune();
+				if (largestSupport > 2*prune && entry.getValue() <= prune) {
+					// erase those generalization clauses that have less than "prune" supporting instances
+					// but only if the largest support is higher than 2*prune (to avoid pruning (nearly) everything)
+					// (if prune = 0 this does not prune anything)
+					it.remove();
+					msg = " (pruned)";
+				}
+				Logger.message(String.format("Generalization %2d support for %s%s", entry.getValue(), entry.getKey(), msg));
+			}
+			generalisation = gmap.keySet().toArray(new Clause[gmap.size()]);
 		}
 		return generalisation;
 	}
