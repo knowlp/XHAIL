@@ -205,12 +205,10 @@ public class Dialler {
 		if (!solverString.contains("wasp")) {
 			// clasp options
 			solverCmd.add("--verbose=0");
-			solverCmd.add("--opt-mode=optN");
-			//solverCmd.add("--opt-strategy=usc,1");
-			solverCmd.add("--opt-strategy=bb");
-			solverCmd.add("--configuration=handy");
-			if (null != builder.values)
-				solverCmd.add("--opt-bound=" + builder.values.toString());
+			if (null == builder.values)
+				solverCmd.add("--opt-mode=optN");
+			else
+				solverCmd.add("--opt-mode=optN," + builder.values.toString());
 		} else {
 			// wasp options
 			// works with git version 1c1d45 and above

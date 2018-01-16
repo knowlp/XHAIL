@@ -134,39 +134,32 @@ These tools are part of the *Potsdam Answer Set Solving Collection* (POTASSCO), 
 
 The following paragraphs illustrate how to download and install both *Gringo* and *Clasp*.
 You can download sources from the official web site, but you can also conveniently find compiled binaries on [SourceForge](http://sourceforge.net/projects/potassco/) in the *Files* section. 
-You need to repeat the following steps for both *Gringo* which is used to ground problems, and *Clasp* which finds the stable models within the grounded knowledge base returned by the other tool. 
-Enter *Gringo*'s (*Clasp*'s) folder and then the folder for the most recent version among those of the 3rd major release.
-At the time of writing this guide, the most recent version of *Gringo v3* (*Clasp v3*) is **3.0.5** (**3.1.0**).
+The easiest way is to download the precompiled binaries from [GitHub Potassco Clingo Release 5.2.2](https://github.com/potassco/clingo/releases/tag/v5.2.2) for example for Ubuntu [clingo-5.2.2-linux-x86_64.tar.gz](https://github.com/potassco/clingo/releases/download/v5.2.2/clingo-5.2.2-linux-x86_64.tar.gz).
+(At the time of writing this guide, the most recent released version of *Gringo* and *Clasp* are 5.5.2 and 3.3.3, respectively. These are present in the *Clingo* package of version 5.2.2.)
 Now select the package that is appropriate for your system and the download should start in a few seconds.
 Further instructions are provided within the package.
-Please take note of the folder where the binaries will sit as it will be needed later.
+Please take note of the folder where the `clasp` and `gringo` binaries will sit as it will be needed later.
 
 If the procedure has been completed successfully, you should now be able to run the following commands on the command line or a terminal and get the given output:
 
-    > /usr/local/bin/gringo --version
+    > <clingo-extracted-package-folder>/gringo --version
+    gringo version 5.2.2
+    Address model: 64-bit
+
+    libgringo version 5.2.2
+    Configuration: without Python, with Lua 5.3.4
+    License: The MIT License <https://opensource.org/licenses/MIT>
+
+and
+
+    > <clingo-extracted-package-folder>/clasp --version
 	
-    gringo 3.0.5
-    
-    Copyright (C) Arne König
+    clasp version 3.3.3
+    Address model: 64-bit
+    libclasp version 3.3.3 (libpotassco version 1.0.1)
+    Configuration: WITH_THREADS=1
     Copyright (C) Benjamin Kaufmann
-    Copyright (C) Roland Kaminski
-    License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
-    Gringo is free software: you are free to change and redistribute it.
-    There is NO WARRANTY, to the extent permitted by law.
-
-or simply `gringo --version` if the target folder is on the `path`, and
-
-    > /usr/local/bin/clasp --version
-	
-	clasp version 3.0.3
-	Address model: 64-bit
-	Configuration: WITH_THREADS=0
-	Copyright (C) Benjamin Kaufmann
-	License GPLv2+: GNU GPL version 2 or later <http://gnu.org/licenses/gpl.html>
-	clasp is free software: you are free to change and redistribute it.
-	There is NO WARRANTY, to the extent permitted by law.
-	
-or simply `clasp --version` if the target folder is on the `path`.
+    License: The MIT License <https://opensource.org/licenses/MIT>
 
 **Notice** that some valid versions of *Gringo*/*Clasp* may have a slightly different output which makes **XHAIL** unable to properly recognise them. 
 In such an unfortunate event, please report it and it will be fixed as soon as possible.

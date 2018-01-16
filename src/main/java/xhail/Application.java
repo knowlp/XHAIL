@@ -179,7 +179,7 @@ public class Application implements Callable<Answers> {
 			Logger.version();
 		Logger.header(config);
 		if (!config.isPrettify()) { // || config.getIndex() > 0
-			Finder gfinder = new Finder(" 4.", "gringo");
+			Finder gfinder = new Finder(" 5.2", "gringo");
 			gfinder.test("gringo", config.getGringo());
 			if (!gfinder.isFound() && config.isSearch()) {
 				Logger.message("Locating gringo ...");
@@ -201,7 +201,7 @@ public class Application implements Callable<Answers> {
 				if (found)
 					Logger.found(config);
 			}
-			Finder cfinder = new Finder("3.2", "clasp");
+			Finder cfinder = new Finder("3.3", "clasp");
 			cfinder.test("clasp", config.getClasp());
 			if (!cfinder.isFound() && config.isSearch()) {
 				Logger.message("Locating clasp ...");
@@ -215,11 +215,9 @@ public class Application implements Callable<Answers> {
 			if (!gfinder.isFound() || (!cfinder.isFound() && !wfinder.isFound())) {
 				String message = "";
 				if (null == gfinder.get("gringo"))
-					message += String.format("'gringo v4.*' needed to run %s ", Logger.SIGNATURE);
-				if (null == wfinder.get("wasp"))
-					message += String.format("'wasp 2.0' needed to run %s ", Logger.SIGNATURE);
-				if (null == cfinder.get("clasp"))
-					message += String.format("'clasp 3.1' needed to run %s ", Logger.SIGNATURE);
+					message += String.format("'gringo 5.2' needed to run %s ", Logger.SIGNATURE);
+				if (null == cfinder.get("clasp") && null == wfinder.get("wasp"))
+					message += String.format("'clasp 3.3' or 'wasp 2.0' needed to run %s ", Logger.SIGNATURE);
 				Logger.error(message);
 			}
 		}
