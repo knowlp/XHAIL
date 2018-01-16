@@ -36,11 +36,11 @@ public class Application implements Callable<Answers> {
 	 * The <code>PATHS</code> where <code>gringo</code> and <code>clasp</code>
 	 * most likely are.
 	 */
-	private static final Path[] PATHS = { Paths.get("/Library/Gringo/"), Paths.get("/Library/Clasp/"), Paths.get("/usr/bin/gringo/"),
+	private static final Path CWD = Paths.get("./").toAbsolutePath().normalize();
+	private static final Path[] PATHS = { CWD, Paths.get("/Library/Gringo/"), Paths.get("/Library/Clasp/"), Paths.get("/usr/bin/gringo/"),
 			Paths.get("/usr/bin/clasp/"), Paths.get("/usr/bin/"), Paths.get("/usr/local/gringo/"), Paths.get("/usr/local/clasp/"), Paths.get("/usr/local/"),
 			Paths.get("/opt/bin/"), Paths.get("/opt/local/"), Paths.get("/opt/clasp/"), Paths.get("/opt/gringo/"), Paths.get("/opt/local/gringo/"),
 			Paths.get("/opt/local/clasp/"), Paths.get("C:\\Gringo\\"), Paths.get("C:\\Clasp\\") };
-	private static final Path ROOT = Paths.get(".").toAbsolutePath().getRoot().normalize();
 
 	private static final ExecutorService service = Executors.newSingleThreadExecutor();
 
@@ -186,9 +186,6 @@ public class Application implements Callable<Answers> {
 				boolean found = false;
 				for (int i = 0; !found && i < PATHS.length; i++)
 					found = gfinder.find(PATHS[i], false);
-				// XXX searching / might not be the perfect idea, how about using something like environment PATH?
-				if (!found)
-					found = gfinder.find(ROOT, true);
 				config.setGringo(gfinder.get("gringo"));
 				if (found)
 					Logger.found(config);
@@ -200,9 +197,6 @@ public class Application implements Callable<Answers> {
 				boolean found = false;
 				for (int i = 0; !found && i < PATHS.length; i++)
 					found = wfinder.find(PATHS[i], false);
-				// XXX searching / might not be the perfect idea, how about using something like environment PATH?
-				if (!found)
-					found = wfinder.find(ROOT, true);
 				config.setClasp(wfinder.get("wasp"));
 				if (found)
 					Logger.found(config);
@@ -214,9 +208,6 @@ public class Application implements Callable<Answers> {
 				boolean found = false;
 				for (int i = 0; !found && i < PATHS.length; i++)
 					found = cfinder.find(PATHS[i], false);
-				// XXX searching / might not be the perfect idea, how about using something like environment PATH?
-				if (!found)
-					found = cfinder.find(ROOT, true);
 				config.setClasp(cfinder.get("clasp"));
 				if (found)
 					Logger.found(config);

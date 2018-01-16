@@ -205,6 +205,7 @@ This argument triggers a routine that recursively visits the folders of the firs
 To be precise, this routine first tries to visit a few common locations where *Gringo*/*Clasp* may have been installed to avoid the recursive search and speed up operations.
 Such locations are the following:
 
+- `./` (if you copy gringo and clasp binaries to the current directory, xhail will find them there)
 - `/Library/Gringo/`
 - `/Library/Clasp/`
 - `/usr/bin/gringo/`
