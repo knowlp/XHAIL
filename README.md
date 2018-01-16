@@ -61,7 +61,7 @@ Many operative systems already have a *JVM* installed. You can check if your mac
     Java(TM) SE Runtime Environment (build 1.8.0_11-b12)
     Java HotSpot(TM) 64-Bit Server VM (build 25.11-b03, mixed mode)
 
-If no *Java* environment is installed or the one available is of the wrong type or version, you need to install a new one. Multiple *JVM*s can coexist on the same machine. The *JVM* appropriate for your machine can be downloaded from the [Oracle](http://www.oracle.com/technetwork/java/javase/downloads/index-jsp-138363.html) web site. Follow the instructions that you can find there to complete the installation. Even if it is not strictly needed to run the application, it is highly suggested that you set some environment variables for *Java*. If you need instructions, you can find several guides online with specific instructions for your own operative system. 
+If no *Java* environment is installed or the one available is of the wrong type or version (XHAIL will not work with OpenJDK), you need to install a new one. Multiple *JVM*s can coexist on the same machine. The *JVM* appropriate for your machine can be downloaded from the [Oracle](http://www.oracle.com/technetwork/java/javase/downloads/index-jsp-138363.html) web site. Follow the instructions that you can find there to complete the installation. Even if it is not strictly needed to run the application, it is highly suggested that you set some environment variables for *Java*. If you need instructions, you can find several guides online with specific instructions for your own operative system. 
 
 ### Obtaining XHAIL
 
@@ -88,8 +88,8 @@ At the time of writing, the stable release of *Gradle* is 2.0 and it is availabl
     OS:           Mac OS X 10.9.4 x86_64
 
 Open a command prompt or a terminal and enter the folder where you downloaded the source code of **XHAIL**. Be sure to be in the root folder of the project: if the folder contains the file `build.gradle`, then you are in the proper directory.
-Now simply issue the command `gradle installApp` to build and install **XHAIL** on you machine.
-Be sure to be online because this procedure is going to download a few packages that are required by the application. The procedure might fail if you don't have enough privileges: on Mac or Linux, you can raise your privileges by preceding the above command with `sudo` and typing your password when requested. On Windows, run the command prompt with *administrator privileges* by right-clicking on its icon and choosing the appropriate menu item. The procedure will install **XHAIL** in `/usr/local/XHAIL-0.5.1/`, so if you wish to change this path, modify the value of `destinationDir` in `build.gradle` accordingly.
+Now simply issue the command `gradle installApp` (for recent gradle versions `gradle installDist`) to build and install **XHAIL** on you machine.
+Be sure to be online because this procedure is going to download a few packages that are required by the application. The procedure might fail if you don't have enough privileges: on Mac or Linux, you can raise your privileges by preceding the above command with `sudo` and typing your password when requested. On Windows, run the command prompt with *administrator privileges* by right-clicking on its icon and choosing the appropriate menu item. The procedure will install **XHAIL** in the current directory into a folder called `./xhail-<version>/`. If you wish to change this path, modify the value of `destinationDir` in `build.gradle` accordingly.
 
 You should be now able to run **XHAIL**. Launch the command `java -jar /usr/local/XHAIL-0.5.1/xhail.jar --version` from the command line or terminal. If you get the following output, the installation completed successfully:
 
