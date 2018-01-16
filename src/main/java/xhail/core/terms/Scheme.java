@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -251,7 +252,7 @@ public class Scheme implements SchemeTerm, Iterable<Scheme> {
 
 	// getVariablesWithoutConstantPlacemarkers
 
-	private final void getPlacemarkers(Set<Placemarker> result) {
+	private final void getPlacemarkers(List<Placemarker> result) {
 		if (null == result)
 			throw new IllegalArgumentException("Illegal 'result' argument in Scheme.getPlacemarkers(Set<Placemarker>): " + result);
 		for (SchemeTerm term : terms)
@@ -269,7 +270,7 @@ public class Scheme implements SchemeTerm, Iterable<Scheme> {
 
 	public final Placemarker[] getPlacemarkers() {
 		if (null == placemarkers) {
-			Set<Placemarker> result = new LinkedHashSet<>();
+			List<Placemarker> result = new LinkedList<>();
 			getPlacemarkers(result);
 			placemarkers = result.toArray(new Placemarker[result.size()]);
 		}
