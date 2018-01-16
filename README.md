@@ -67,7 +67,7 @@ If no *Java* environment is installed or the one available is of the wrong type 
 
 **Download XHAIL v0.5.1:** [xhail.jar](https://github.com/stefano-bragaglia/XHAIL/blob/master/examples/xhail.jar?raw=true)
 
-You can obtain **XHAIL** by downloading it from the above link (you still need to configure it, see below) or by issuing the command `git clone https://github.com/stefano-bragaglia/XHAIL.git` on the command line or terminal to download and compile the sources. We recommend to use the latter procedure which requires the *git* tool to be installed on your machine. If it doesn't, you can find the latest *git* version for your operative system on the [official website](http://git-scm.com/downloads). Alternatively, you can use one of the several *GUI* applications for *git* (there are a few free, open source applications). If you have some problems dealing with *git*, we recommend to read this simple [guide](http://rogerdudler.github.io/git-guide/).
+You can obtain version 0.5.1 of **XHAIL** by downloading it from the above link (you still need to configure it, see below) or you can get the most recent version by issuing the command `git clone https://github.com/stefano-bragaglia/XHAIL.git` on the command line or terminal to download and compile the sources. We recommend to use the latter procedure which requires the *git* tool to be installed on your machine. If it doesn't, you can find the latest *git* version for your operative system on the [official website](http://git-scm.com/downloads). Alternatively, you can use one of the several *GUI* applications for *git* (there are a few free, open source applications). If you have some problems dealing with *git*, we recommend to read this simple [guide](http://rogerdudler.github.io/git-guide/).
 
 ### Compiling XHAIL
 
@@ -91,9 +91,9 @@ Open a command prompt or a terminal and enter the folder where you downloaded th
 Now simply issue the command `gradle installApp` (for recent gradle versions `gradle installDist`) to build and install **XHAIL** on you machine.
 Be sure to be online because this procedure is going to download a few packages that are required by the application. The procedure might fail if you don't have enough privileges: on Mac or Linux, you can raise your privileges by preceding the above command with `sudo` and typing your password when requested. On Windows, run the command prompt with *administrator privileges* by right-clicking on its icon and choosing the appropriate menu item. The procedure will install **XHAIL** in the current directory into a folder called `./xhail-<version>/`. If you wish to change this path, modify the value of `destinationDir` in `build.gradle` accordingly.
 
-You should be now able to run **XHAIL**. Launch the command `java -jar /usr/local/XHAIL-0.5.1/xhail.jar --version` from the command line or terminal. If you get the following output, the installation completed successfully:
+You should be now able to run **XHAIL**. Launch the command `java -jar xhail-0.5.2/xhail.jar --version` from the command line or terminal. If you get the following output, the installation completed successfully:
 
-    xhail version 0.5.1
+    xhail version 0.5.2
     
     Copyright (c) -2014 Stefano Bragaglia
     Copyright (c) -2014 Oliver Ray
@@ -106,11 +106,11 @@ You should be now able to run **XHAIL**. Launch the command `java -jar /usr/loca
 
 To save you time when typing the command, we recommend to add the following alias to your shell profile: 
 
-    alias xhail='java -jar /usr/local/XHAIL-0.5.1/xhail.jar' 
+    alias xhail='java -jar <path-to-your-repository>/xhail-0.5.2/xhail.jar' 
 
 so that next time you want to run **XHAIL**, you can simply type `xhail --version`. On Windows you can achieve a similar result by creating a batch file `xhail.bat` which passes all the arguments it receives to **XHAIL**:
 
-    java -jar C:\Program Files\XHAIL-0.5.1\xhail.jar %*
+    java -jar <path-to-your-repository>\xhail-0.5.2\xhail.jar %*
 
 Be sure to save the batch script in a folder which is included in the `PATH` environment variable.
 
