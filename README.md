@@ -176,7 +176,7 @@ In such an unfortunate event, please report it and it will be fixed as soon as p
 After the *Gringo*/*Clasp* tools have been installed and the *Java* wrapper has been compiled, **XHAIL** can eventually be run.
 If launched with `--help` (or `-h`) as an argument, it produces the following help message that includes an example of usage and the list of admitted arguments:
 
-    xhail version 0.5.1
+    xhail version 0.5.2
     
     Usage:     java -jar xhail.jar  [options]  [files]
     
