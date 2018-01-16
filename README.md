@@ -95,8 +95,10 @@ You should be now able to run **XHAIL**. Launch the command `java -jar /usr/loca
 
     xhail version 0.5.1
     
-    Copyright (c) Stefano Bragaglia
-    Copyright (c) Oliver Ray
+    Copyright (c) -2014 Stefano Bragaglia
+    Copyright (c) -2014 Oliver Ray
+
+    Adaptations Copyright (c) 2016-2018 Peter Schueller
     
     GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
     'xhail' is free software: you are free to change and redistribute it.

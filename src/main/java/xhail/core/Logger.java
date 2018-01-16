@@ -218,8 +218,10 @@ public class Logger {
 		System.out.println();
 		System.out.println(SIGNATURE + " " + VERSION);
 		System.out.println();
-		System.out.println("Copyright (c) Stefano Bragaglia");
-		System.out.println("Copyright (c) Oliver Ray");
+		System.out.println("Copyright (c) -2014 Stefano Bragaglia");
+		System.out.println("Copyright (c) -2014 Oliver Ray");
+		System.out.println();
+		System.out.println("Copyright (c) 2016-2018 Peter Schueller");
 		System.out.println();
 		System.out.println("GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>");
 		System.out.println(String.format("'%s' is free software: you are free to change and redistribute it.", SIGNATURE));
