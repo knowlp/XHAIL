@@ -1,0 +1,34 @@
+we use all background knowledge
+
+for each #modeb, e.g., penguin(+bird)
+
+% if this predicate is in the body, the variable is bound to one of the values of the true predicates
+1 { var_value(VarId,X) : penguin(X), bird(X) } 1 :-
+	use_body_pred(id_idx(Id,Idx),penguin,pos,1),
+	bind_bvar(id_idx(Id,Idx),pos,1,VarId).
+
+% one variable cannot receive two values
+:- var_value(VarId,X1), var_value(VarId,X2), X1 < X2.
+
+% now the pos body is satisfied
+
+% if variable assignment makes negative body satisfied, this is not an answer set (because the rule cannot fire)
+:- use_body_pred(id_idx(Id,Idx),penguin,neg,1),
+	bind_bvar(id_idx(Id,Idx),pos,1,VarId),
+	var_value(VarId,X),
+	penguin(X), bird(X).
+
+% now no literal in the neg body is satisfied
+
+for each #modeh, e.g., flies(+bird)
+
+true(flies(X)) :-
+	% head of represented rule is flies(X)
+	use_head_pred(Id,flies,1), bind_hvar(1,VarId), var_value(VarId,X), bird(X).
+
+
+% for each <X> in Delta
+good :- true(<X>).
+
+% make sure we make at least one X in delta true
+:- not good.

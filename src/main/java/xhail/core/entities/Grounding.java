@@ -411,6 +411,7 @@ public class Grounding implements Solvable {
 	}
 
 	public final Clause[] getKernel() {
+    // XXX this method could use an alternative method based on the Inspire ILP encoding
 		if (null == kernel) {
 			//Logger.message("getKernel");
 			Set<Clause> set = new LinkedHashSet<>();
