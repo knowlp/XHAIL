@@ -1,0 +1,5 @@
+*** ERROR (xhail): errors found:
+  unknown argument 'penguins_simple.lp'
+
+*** Info  (xhail): try '-h' or '--help' for usage information
+        0.17 real         0.15 user         0.03 sys

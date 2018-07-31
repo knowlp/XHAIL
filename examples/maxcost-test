@@ -1,0 +1,4 @@
+#!/bin/bash
+for ex in toys/*.lp; do
+    gtimeout 2m time java -jar xhail.jar -b -c /usr/bin/clasp -g /usr/bin/gringo $ex 2>&1 |tee logs/${this}.log
+  done

@@ -1,0 +1,44 @@
+xhail 0.5.1
+
+Reading from 'toys/reaction.lp'...
+
+Solving...
+
+/var/folders/x1/_wsv95gd217_mh0v274hr6b40000gn/T/xhail3319385308919038966.tmp:1:1-6: error: lexer error, unexpected #hide
+/var/folders/x1/_wsv95gd217_mh0v274hr6b40000gn/T/xhail3319385308919038966.tmp:1:1-7: error: syntax error, unexpected .
+/var/folders/x1/_wsv95gd217_mh0v274hr6b40000gn/T/xhail3319385308919038966.tmp:11:1-8: error: lexer error, unexpected #domain
+/var/folders/x1/_wsv95gd217_mh0v274hr6b40000gn/T/xhail3319385308919038966.tmp:12:1-8: error: lexer error, unexpected #domain
+/var/folders/x1/_wsv95gd217_mh0v274hr6b40000gn/T/xhail3319385308919038966.tmp:13:1-8: error: lexer error, unexpected #domain
+/var/folders/x1/_wsv95gd217_mh0v274hr6b40000gn/T/xhail3319385308919038966.tmp:14:1-8: error: lexer error, unexpected #domain
+/var/folders/x1/_wsv95gd217_mh0v274hr6b40000gn/T/xhail3319385308919038966.tmp:15:1-8: error: lexer error, unexpected #domain
+/var/folders/x1/_wsv95gd217_mh0v274hr6b40000gn/T/xhail3319385308919038966.tmp:16:1-8: error: lexer error, unexpected #domain
+/var/folders/x1/_wsv95gd217_mh0v274hr6b40000gn/T/xhail3319385308919038966.tmp:17:1-8: error: lexer error, unexpected #domain
+/var/folders/x1/_wsv95gd217_mh0v274hr6b40000gn/T/xhail3319385308919038966.tmp:18:1-8: error: lexer error, unexpected #domain
+/var/folders/x1/_wsv95gd217_mh0v274hr6b40000gn/T/xhail3319385308919038966.tmp:64:209-210: error: syntax error, unexpected :, expecting . or ;
+/var/folders/x1/_wsv95gd217_mh0v274hr6b40000gn/T/xhail3319385308919038966.tmp:73:10-11: error: syntax error, unexpected [, expecting {
+/var/folders/x1/_wsv95gd217_mh0v274hr6b40000gn/T/xhail3319385308919038966.tmp:78:49-50: error: syntax error, unexpected :, expecting } or ;
+/var/folders/x1/_wsv95gd217_mh0v274hr6b40000gn/T/xhail3319385308919038966.tmp:11:9-18: error: unsafe variables in:
+orf(ORF):-[#inc_base].
+/var/folders/x1/_wsv95gd217_mh0v274hr6b40000gn/T/xhail3319385308919038966.tmp:11:13-16: note: 'ORF' is unsafe
+/var/folders/x1/_wsv95gd217_mh0v274hr6b40000gn/T/xhail3319385308919038966.tmp:12:9-34: error: unsafe variables in:
+reaction(Reaction):-[#inc_base].
+/var/folders/x1/_wsv95gd217_mh0v274hr6b40000gn/T/xhail3319385308919038966.tmp:12:18-26: note: 'Reaction' is unsafe
+/var/folders/x1/_wsv95gd217_mh0v274hr6b40000gn/T/xhail3319385308919038966.tmp:12:9-34: error: unsafe variables in:
+reaction(R1):-[#inc_base].
+/var/folders/x1/_wsv95gd217_mh0v274hr6b40000gn/T/xhail3319385308919038966.tmp:12:27-29: note: 'R1' is unsafe
+/var/folders/x1/_wsv95gd217_mh0v274hr6b40000gn/T/xhail3319385308919038966.tmp:12:9-34: error: unsafe variables in:
+reaction(R2):-[#inc_base].
+/var/folders/x1/_wsv95gd217_mh0v274hr6b40000gn/T/xhail3319385308919038966.tmp:12:30-32: note: 'R2' is unsafe
+/var/folders/x1/_wsv95gd217_mh0v274hr6b40000gn/T/xhail3319385308919038966.tmp:13:9-38: error: unsafe variables in:
+metabolite(Metabolite):-[#inc_base].
+/var/folders/x1/_wsv95gd217_mh0v274hr6b40000gn/T/xhail3319385308919038966.tmp:13:20-30: note: 'Metabolite' is unsafe
+/var/folders/x1/_wsv95gd217_mh0v274hr6b40000gn/T/xhail3319385308919038966.tmp:13:9-38: error: unsafe variables in:
+metabolite(M1):-[#inc_base].
+/var/folders/x1/_wsv95gd217_mh0v274hr6b40000gn/T/xhail3319385308919038966.tmp:13:31-33: note: 'M1' is unsafe
+/var/folders/x1/_wsv95gd217_mh0v274hr6b40000gn/T/xhail3319385308919038966.tmp:13:9-38: error: unsafe variables in:
+metabolite(M2):-[#inc_base].
+/var/folders/x1/_wsv95gd217_mh0v274hr6b40000gn/T/xhail3319385308919038966.tmp:13:34-36: note: 'M2' is unsafe
+*** ERROR: (gringo): too many messages.
+*** ERROR (xhail): expected ATOM but EOF found
+*** Info  (xhail): try '-h' or '--help' for usage information
+        0.38 real         0.44 user         0.07 sys
