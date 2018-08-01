@@ -1,19 +1,16 @@
 /**
- * 
+ *
  */
 package xhail.core.entities;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -22,23 +19,15 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import java.util.TreeMap;
 import java.util.Iterator;
 import java.lang.Math;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
-import org.json.*;
 
 import xhail.core.Buildable;
 import xhail.core.Config;
@@ -463,10 +452,10 @@ public class Grounding implements Solvable {
 			// Logger.message("getKernel");
 			Set<Clause> set = new LinkedHashSet<>();
 
-			String insp = "";
+            String insp = "";
 			File temp = null;
 			//temp = new File("src/input1.lp");
-			
+
 			BufferedWriter bw = null;
 			try {
 				temp = File.createTempFile("tmpf1", ".lp");
@@ -513,7 +502,7 @@ public class Grounding implements Solvable {
 					bargs[k] = bargs[k].replaceAll("[^a-zA-Z]", "");
 				if (modeB.contains("not")) {
 					try {
-						bww.write(" 1 { var_value(VarId,X) : not " + body + "(X), " + bargs[0] + "(X)" + " } 1 :-\n" + 
+						bww.write(" 1 { var_value(VarId,X) : not " + body + "(X), " + bargs[0] + "(X)" + " } 1 :-\n" +
 								"			use_body_pred(id_idx(Id,Idx)," + body + ",neg," + bargs.length + "),\n"
 								+ "			bind_bvar(id_idx(Id,Idx),neg,1,VarId).\n");
 					} catch (IOException e) {
@@ -611,14 +600,11 @@ public class Grounding implements Solvable {
 			// System.out.println(all);
 			insp += "\n";
 			String line = "";
-			FileReader fr = null;
-			try {
-				fr = new FileReader("hypgen.lp");
-			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			BufferedReader br = new BufferedReader(fr);
+			//ClassLoader loader = getClass().getClassLoader();
+			//System.out.println(Application.class.getResource("hypgen.lp"));
+			InputStream is = Application.class.getResourceAsStream("hypgen.lp");
+		  InputStreamReader isr = new InputStreamReader(is);
+			BufferedReader br = new BufferedReader(isr);
 			try {
 				while ((line = br.readLine()) != null )
 					insp += line + "\n";
@@ -665,7 +651,8 @@ public class Grounding implements Solvable {
 			Pattern r = Pattern.compile(pattern);
 			Matcher m = r.matcher(txt);
 			m.find();
-			String answer = m.group(1);
+			String answer;
+			answer = m.group(1);
 			String[] arr = answer.split(" ");
 			arr[0] = arr[0].substring(1, arr[0].length());
 			for (String s : arr)
@@ -704,7 +691,7 @@ public class Grounding implements Solvable {
 			BufferedReader input = new BufferedReader(new InputStreamReader(proc.getInputStream()));
 			String text = input.lines().collect(Collectors.joining());
 			// System.out.println(text);
-			String pat = "Answer: (\\d*.{1," + txt.length() + "})SATISFIABLE";	
+			String pat = "Answer: (\\d*.{1," + txt.length() + "})SATISFIABLE";
 			Pattern re = Pattern.compile(pat);
 			Matcher ma = re.matcher(text);
 			ma.find();
@@ -747,7 +734,7 @@ public class Grounding implements Solvable {
 						mavar.find();
 						ans4 = mavar.group(0);
 					}
-                    
+
 					if (ans1.contains("neg")) {
 						ModeB b = Parser.parseModeB("not " + StringUtils.substringBetween(ans1, "),", ",") + "(+"
 								+ StringUtils.substringBetween(ans4, "),", ")") + ")");
@@ -757,10 +744,53 @@ public class Grounding implements Solvable {
 								+ StringUtils.substringBetween(ans4, "),", ")") + ")");
 						batoms.add(b);
 					}
-					
+
 				}
 			else
 				batoms = Arrays.asList(getModeBs());
+
+
+			Clause.Builder builder;
+			for(Atom alpha : delta)
+			{
+					Scheme scheme = getModeHs()[0].getScheme();
+					Collection<Term> substitutes = SchemeTerm.findSubstitutes(scheme, alpha);
+					builder = new Clause.Builder().setHead(//
+							new Atom.Builder(alpha).setWeight(getModeHs()[0].getWeigth()).setPriority(getModeHs()[0].getPriority())
+							.build());
+					Set<Term> usables = new HashSet<>(substitutes);
+					for (ModeB mode : batoms)
+					{
+						    scheme = mode.getScheme();
+							if (mode.isNegated()) {
+								Map<Atom, Collection<Term>> found = SchemeTerm.generateAndOutput(scheme,
+										usables, table, facts);
+								for (Atom atom : found.keySet()) {
+									builder.addLiteral(new Literal.Builder( //
+											new Atom.Builder(atom).build())
+															.setNegated(mode.isNegated())
+															.build());
+			}
+			}
+							else {
+								Map.Entry<Collection<Atom>, Collection<Term>> found = SchemeTerm
+										.matchAndOutput(scheme, table.get(scheme), usables);
+								for (Atom atom : found.getKey()) {
+									builder.addLiteral(new Literal.Builder( //
+											new Atom.Builder(atom).build())
+															.setNegated(mode.isNegated())
+															.build());
+								}
+
+							}
+			}
+					set.add(builder.build());
+					kernel = set.toArray(new Clause[set.size()]);
+
+			}
+
+
+			/*
 
 			for (Atom alpha : delta)
 				for (ModeH head : problem.getModeHs()) {
@@ -783,6 +813,7 @@ public class Grounding implements Solvable {
 										Map<Atom, Collection<Term>> found = SchemeTerm.generateAndOutput(scheme,
 												usables, table, facts);
 										for (Atom atom : found.keySet()) {
+											System.out.println(atom);
 											builder.addLiteral(new Literal.Builder( //
 													new Atom.Builder(atom).setWeight(mode.getWeigth())
 															.setPriority(mode.getPriority()).build())
@@ -815,7 +846,8 @@ public class Grounding implements Solvable {
 						}
 						kernel = set.toArray(new Clause[set.size()]);
 					}
-				}
+				}*/
+
 			kernel = set.toArray(new Clause[set.size()]);
 		}
 		return kernel;
