@@ -1,4 +1,14 @@
 #!/bin/bash
 for ex in toys/*.lp; do
-    gtimeout 2m time java -jar xhail.jar -b -c /usr/bin/clasp -g /usr/bin/gringo $ex 2>&1 |tee logs/${this}.log
+  for cost in {5..7}; do
+    this=`basename $ex`
+    gtimeout 1m time java -jar ../xhail-0.5.2/xhail.jar -b -c /usr/bin/clasp -g /usr/bin/gringo $ex $cost 2>&1 |tee logs/${this}_$cost.log  | grep 'ERROR\|meaningful\|Caused by' &> /dev/null
+    if [ $? != 0 ]; then
+      echo "maxcost found for $ex"
+      break
+    fi
+    if [ $cost == 7 ]; then
+      echo "unsatisfiable example: $ex"
+    fi
   done
+done
