@@ -1,0 +1,57 @@
+xhail 0.5.2
+
+calling '/usr/bin/gringo --version' to detect binary matching 'gringo|5.2'
+calling '/usr/bin/clasp --version' to detect binary matching 'clasp|3.3'
+Reading from 'toys/reaction.lp'...
+
+Solving...
+
+/var/folders/x1/_wsv95gd217_mh0v274hr6b40000gn/T/xhail2941725117589399027.tmp:11:1-8: error: lexer error, unexpected #domain
+/var/folders/x1/_wsv95gd217_mh0v274hr6b40000gn/T/xhail2941725117589399027.tmp:12:1-8: error: lexer error, unexpected #domain
+/var/folders/x1/_wsv95gd217_mh0v274hr6b40000gn/T/xhail2941725117589399027.tmp:13:1-8: error: lexer error, unexpected #domain
+/var/folders/x1/_wsv95gd217_mh0v274hr6b40000gn/T/xhail2941725117589399027.tmp:14:1-8: error: lexer error, unexpected #domain
+/var/folders/x1/_wsv95gd217_mh0v274hr6b40000gn/T/xhail2941725117589399027.tmp:15:1-8: error: lexer error, unexpected #domain
+/var/folders/x1/_wsv95gd217_mh0v274hr6b40000gn/T/xhail2941725117589399027.tmp:16:1-8: error: lexer error, unexpected #domain
+/var/folders/x1/_wsv95gd217_mh0v274hr6b40000gn/T/xhail2941725117589399027.tmp:17:1-8: error: lexer error, unexpected #domain
+/var/folders/x1/_wsv95gd217_mh0v274hr6b40000gn/T/xhail2941725117589399027.tmp:18:1-8: error: lexer error, unexpected #domain
+/var/folders/x1/_wsv95gd217_mh0v274hr6b40000gn/T/xhail2941725117589399027.tmp:64:209-210: error: syntax error, unexpected :, expecting . or ;
+/var/folders/x1/_wsv95gd217_mh0v274hr6b40000gn/T/xhail2941725117589399027.tmp:11:9-18: error: unsafe variables in:
+orf(ORF):-[#inc_base].
+/var/folders/x1/_wsv95gd217_mh0v274hr6b40000gn/T/xhail2941725117589399027.tmp:11:13-16: note: 'ORF' is unsafe
+/var/folders/x1/_wsv95gd217_mh0v274hr6b40000gn/T/xhail2941725117589399027.tmp:12:9-34: error: unsafe variables in:
+reaction(Reaction):-[#inc_base].
+/var/folders/x1/_wsv95gd217_mh0v274hr6b40000gn/T/xhail2941725117589399027.tmp:12:18-26: note: 'Reaction' is unsafe
+/var/folders/x1/_wsv95gd217_mh0v274hr6b40000gn/T/xhail2941725117589399027.tmp:12:9-34: error: unsafe variables in:
+reaction(R1):-[#inc_base].
+/var/folders/x1/_wsv95gd217_mh0v274hr6b40000gn/T/xhail2941725117589399027.tmp:12:27-29: note: 'R1' is unsafe
+/var/folders/x1/_wsv95gd217_mh0v274hr6b40000gn/T/xhail2941725117589399027.tmp:12:9-34: error: unsafe variables in:
+reaction(R2):-[#inc_base].
+/var/folders/x1/_wsv95gd217_mh0v274hr6b40000gn/T/xhail2941725117589399027.tmp:12:30-32: note: 'R2' is unsafe
+/var/folders/x1/_wsv95gd217_mh0v274hr6b40000gn/T/xhail2941725117589399027.tmp:13:9-38: error: unsafe variables in:
+metabolite(Metabolite):-[#inc_base].
+/var/folders/x1/_wsv95gd217_mh0v274hr6b40000gn/T/xhail2941725117589399027.tmp:13:20-30: note: 'Metabolite' is unsafe
+/var/folders/x1/_wsv95gd217_mh0v274hr6b40000gn/T/xhail2941725117589399027.tmp:13:9-38: error: unsafe variables in:
+metabolite(M1):-[#inc_base].
+/var/folders/x1/_wsv95gd217_mh0v274hr6b40000gn/T/xhail2941725117589399027.tmp:13:31-33: note: 'M1' is unsafe
+/var/folders/x1/_wsv95gd217_mh0v274hr6b40000gn/T/xhail2941725117589399027.tmp:13:9-38: error: unsafe variables in:
+metabolite(M2):-[#inc_base].
+/var/folders/x1/_wsv95gd217_mh0v274hr6b40000gn/T/xhail2941725117589399027.tmp:13:34-36: note: 'M2' is unsafe
+/var/folders/x1/_wsv95gd217_mh0v274hr6b40000gn/T/xhail2941725117589399027.tmp:14:9-38: error: unsafe variables in:
+complex(Complex):-[#inc_base].
+/var/folders/x1/_wsv95gd217_mh0v274hr6b40000gn/T/xhail2941725117589399027.tmp:14:17-24: note: 'Complex' is unsafe
+/var/folders/x1/_wsv95gd217_mh0v274hr6b40000gn/T/xhail2941725117589399027.tmp:14:9-38: error: unsafe variables in:
+complex(Cplx1):-[#inc_base].
+/var/folders/x1/_wsv95gd217_mh0v274hr6b40000gn/T/xhail2941725117589399027.tmp:14:25-30: note: 'Cplx1' is unsafe
+/var/folders/x1/_wsv95gd217_mh0v274hr6b40000gn/T/xhail2941725117589399027.tmp:14:9-38: error: unsafe variables in:
+complex(Cplx2):-[#inc_base].
+/var/folders/x1/_wsv95gd217_mh0v274hr6b40000gn/T/xhail2941725117589399027.tmp:14:31-36: note: 'Cplx2' is unsafe
+/var/folders/x1/_wsv95gd217_mh0v274hr6b40000gn/T/xhail2941725117589399027.tmp:15:9-46: error: unsafe variables in:
+compartment(Compartment):-[#inc_base].
+/var/folders/x1/_wsv95gd217_mh0v274hr6b40000gn/T/xhail2941725117589399027.tmp:15:21-32: note: 'Compartment' is unsafe
+*** ERROR: (gringo): too many messages.
+*** ERROR: (clasp): bad input stream
+*** Info : (clasp): Try '--help' for usage information
+solver process ended with exit value 128 (expect 30)!
+*** ERROR (xhail): parseAnswer: expected ATOM but EOF found
+*** Info  (xhail): try '-h' or '--help' for usage information
+        0.42 real         0.48 user         0.08 sys

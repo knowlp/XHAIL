@@ -1,0 +1,29 @@
+xhail 0.5.2
+
+calling '/usr/bin/gringo --version' to detect binary matching 'gringo|5.2'
+calling '/usr/bin/clasp --version' to detect binary matching 'clasp|3.3'
+Reading from 'toys/example3.lp'...
+
+Solving...
+
+got end of input with best value 1 and first value 1 (optimal result)
+Generalization  1 support for p(V1):-q(V1,V2,c),q(V1,V2,d).
+got end of input with best value 2 and first value 2 (optimal result)
+Answer 1:
+  hypothesis:
+    p(V1):-t(V1),q(V1,V2,c),t(V2).
+  uncovered:
+    -
+
+NB: 1 additional optimal answer/s omitted (use '-a' to see them all)
+
+Answers     : 2
+  optimal   : 2
+  shown     : 1
+Calls       : 2
+Time        : 1.771s  (loading: 0.159s  1st answer: 1.764s)
+  abduction : 0.048s
+  deduction : 1.476s
+  induction : 0.040s
+
+        2.00 real         3.25 user         0.21 sys

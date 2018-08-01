@@ -1,0 +1,35 @@
+xhail 0.5.2
+
+calling '/usr/bin/gringo --version' to detect binary matching 'gringo|5.2'
+calling '/usr/bin/clasp --version' to detect binary matching 'clasp|3.3'
+Reading from 'toys/mwe2.lp'...
+
+Solving...
+
+got end of input with best value 3 and first value 3 (optimal result)
+Generalization  1 support for goodFlag(V1,"-fomit-frame-pointer"):-small_ft(ft47,V1),small_ft(ft9,V1),small_ft(ft20,V1),small_ft(ft37,V1),not small_ft(ft52,V1),small_ft(ft10,V1),small_ft(ft27,V1),small_ft(ft42,V1),small_ft(ft4,V1),small_ft(ft17,V1),small_ft(ft32,V1),small_ft(ft49,V1),small_ft(ft22,V1),small_ft(ft39,V1),small_ft(ft54,V1),small_ft(ft12,V1),small_ft(ft29,V1),small_ft(ft44,V1),small_ft(ft6,V1),small_ft(ft19,V1),small_ft(ft34,V1),not small_ft(ft24,V1),not small_ft(ft1,V1),small_ft(ft14,V1),small_ft(ft46,V1),small_ft(ft8,V1),small_ft(ft36,V1),not small_ft(ft51,V1),small_ft(ft26,V1),small_ft(ft41,V1),small_ft(ft3,V1),not small_ft(ft16,V1),small_ft(ft31,V1),small_ft(ft48,V1),not small_ft(ft21,V1),small_ft(ft38,V1),small_ft(ft53,V1),small_ft(ft11,V1),small_ft(ft28,V1),small_ft(ft43,V1),not small_ft(ft5,V1),small_ft(ft18,V1),small_ft(ft33,V1),small_ft(ft23,V1),small_ft(ft55,V1),not small_ft(ft13,V1),small_ft(ft45,V1),small_ft(ft7,V1),small_ft(ft35,V1),not small_ft(ft50,V1),small_ft(ft25,V1),small_ft(ft40,V1),small_ft(ft2,V1),small_ft(ft15,V1),not small_ft(ft30,V1).
+Generalization  1 support for goodFlag(V1,"-ftree-pre"):-small_ft(ft47,V1),small_ft(ft9,V1),small_ft(ft20,V1),small_ft(ft37,V1),not small_ft(ft52,V1),small_ft(ft10,V1),small_ft(ft27,V1),small_ft(ft42,V1),small_ft(ft4,V1),small_ft(ft17,V1),small_ft(ft32,V1),small_ft(ft49,V1),small_ft(ft22,V1),small_ft(ft39,V1),small_ft(ft54,V1),small_ft(ft12,V1),small_ft(ft29,V1),small_ft(ft44,V1),small_ft(ft6,V1),small_ft(ft19,V1),small_ft(ft34,V1),not small_ft(ft24,V1),not small_ft(ft1,V1),small_ft(ft14,V1),small_ft(ft46,V1),small_ft(ft8,V1),small_ft(ft36,V1),not small_ft(ft51,V1),small_ft(ft26,V1),small_ft(ft41,V1),small_ft(ft3,V1),not small_ft(ft16,V1),small_ft(ft31,V1),small_ft(ft48,V1),not small_ft(ft21,V1),small_ft(ft38,V1),small_ft(ft53,V1),small_ft(ft11,V1),small_ft(ft28,V1),small_ft(ft43,V1),not small_ft(ft5,V1),small_ft(ft18,V1),small_ft(ft33,V1),small_ft(ft23,V1),small_ft(ft55,V1),not small_ft(ft13,V1),small_ft(ft45,V1),small_ft(ft7,V1),small_ft(ft35,V1),not small_ft(ft50,V1),small_ft(ft25,V1),small_ft(ft40,V1),small_ft(ft2,V1),small_ft(ft15,V1),not small_ft(ft30,V1).
+Generalization  1 support for goodFlag(V1,"-ftree-ch"):-small_ft(ft47,V1),small_ft(ft9,V1),small_ft(ft20,V1),small_ft(ft37,V1),not small_ft(ft52,V1),small_ft(ft10,V1),small_ft(ft27,V1),small_ft(ft42,V1),small_ft(ft4,V1),small_ft(ft17,V1),small_ft(ft32,V1),small_ft(ft49,V1),small_ft(ft22,V1),small_ft(ft39,V1),small_ft(ft54,V1),small_ft(ft12,V1),small_ft(ft29,V1),small_ft(ft44,V1),small_ft(ft6,V1),small_ft(ft19,V1),small_ft(ft34,V1),not small_ft(ft24,V1),not small_ft(ft1,V1),small_ft(ft14,V1),small_ft(ft46,V1),small_ft(ft8,V1),small_ft(ft36,V1),not small_ft(ft51,V1),small_ft(ft26,V1),small_ft(ft41,V1),small_ft(ft3,V1),not small_ft(ft16,V1),small_ft(ft31,V1),small_ft(ft48,V1),not small_ft(ft21,V1),small_ft(ft38,V1),small_ft(ft53,V1),small_ft(ft11,V1),small_ft(ft28,V1),small_ft(ft43,V1),not small_ft(ft5,V1),small_ft(ft18,V1),small_ft(ft33,V1),small_ft(ft23,V1),small_ft(ft55,V1),not small_ft(ft13,V1),small_ft(ft45,V1),small_ft(ft7,V1),small_ft(ft35,V1),not small_ft(ft50,V1),small_ft(ft25,V1),small_ft(ft40,V1),small_ft(ft2,V1),small_ft(ft15,V1),not small_ft(ft30,V1).
+/var/folders/x1/_wsv95gd217_mh0v274hr6b40000gn/T/xhail914564502382027943.tmp:6284:4-51: info: atom does not occur in any rule head:
+goodFlag("select","-fguess-branch-probability")
+/var/folders/x1/_wsv95gd217_mh0v274hr6b40000gn/T/xhail914564502382027943.tmp:6285:3-50: info: atom does not occur in any rule head:
+goodFlag("select","-fguess-branch-probability")
+got end of input with best value 3 and first value 3 (optimal result)
+Answer 1:
+  hypothesis:
+    goodFlag(V1,"-ftree-pre").
+    goodFlag(V1,"-fomit-frame-pointer").
+    goodFlag(V1,"-ftree-ch").
+  uncovered:
+    -
+
+Answers     : 1
+  optimal   : 1
+  shown     : 1
+Calls       : 2
+Time        : 2.185s  (loading: 0.515s  1st answer: 2.181s)
+  abduction : 0.638s
+  deduction : 0.567s
+  induction : 0.430s
+
+        2.37 real         4.29 user         0.68 sys
