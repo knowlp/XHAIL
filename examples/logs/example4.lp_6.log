@@ -1,0 +1,28 @@
+xhail 0.5.2
+
+calling '/usr/bin/gringo --version' to detect binary matching 'gringo|5.2'
+calling '/usr/bin/clasp --version' to detect binary matching 'clasp|3.3'
+Reading from 'toys/example4.lp'...
+
+Solving...
+
+got end of input with best value 2 and first value 2 (optimal result)
+*** Info  (xhail): computation threw an exception java.lang.IllegalStateException: No match found
+java.util.concurrent.ExecutionException: java.lang.IllegalStateException: No match found
+	at java.util.concurrent.FutureTask.report(FutureTask.java:122)
+	at java.util.concurrent.FutureTask.get(FutureTask.java:192)
+	at xhail.Application.execute(Application.java:284)
+	at xhail.Application.main(Application.java:172)
+Caused by: java.lang.IllegalStateException: No match found
+	at java.util.regex.Matcher.group(Matcher.java:536)
+	at xhail.core.entities.Grounding.getKernel(Grounding.java:655)
+	at xhail.core.entities.Grounding.getGeneralisation(Grounding.java:398)
+	at xhail.core.entities.Answers.timeDeduction(Answers.java:175)
+	at xhail.core.entities.Problem.solve(Problem.java:505)
+	at xhail.Application.call(Application.java:250)
+	at xhail.Application.call(Application.java:29)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+        0.45 real         0.49 user         0.09 sys

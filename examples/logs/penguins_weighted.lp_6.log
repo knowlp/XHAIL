@@ -1,0 +1,27 @@
+xhail 0.5.2
+
+calling '/usr/bin/gringo --version' to detect binary matching 'gringo|5.2'
+calling '/usr/bin/clasp --version' to detect binary matching 'clasp|3.3'
+Reading from 'toys/penguins_weighted.lp'...
+
+Solving...
+
+got end of input with best value 0 12 and first value 5 8 (optimal result)
+Generalization  3 support for flies(V1):-not penguin(V1).
+got end of input with best value 0 5 and first value 3 4 (optimal result)
+Answer 1:
+  hypothesis:
+    flies(V1):-not penguin(V1),bird(V1).
+  uncovered:
+    -
+
+Answers     : 1
+  optimal   : 1
+  shown     : 1
+Calls       : 2
+Time        : 0.386s  (loading: 0.150s  1st answer: 0.384s)
+  abduction : 0.054s
+  deduction : 0.114s
+  induction : 0.037s
+
+        0.54 real         0.65 user         0.11 sys

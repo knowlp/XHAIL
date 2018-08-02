@@ -1,0 +1,21 @@
+xhail 0.5.2
+
+calling '/usr/bin/gringo --version' to detect binary matching 'gringo|5.2'
+calling '/usr/bin/clasp --version' to detect binary matching 'clasp|3.3'
+Reading from 'toys/penguins_unsatisfiable.lp'...
+
+Solving...
+
+solver process ended with exit value 20 (expect 30)!
+got no answer set (unsatisfiable)
+*** Info  (xhail): no meaningful answers, try more iterations (--iter,-i <num>)
+Answers     : 0
+  optimal   : 0
+  shown     : 0
+Calls       : 1
+Time        : 0.261s  (loading: 0.177s  1st answer: 0.000s)
+  abduction : 0.046s
+  deduction : 0.000s
+  induction : 0.000s
+
+        0.42 real         0.46 user         0.08 sys

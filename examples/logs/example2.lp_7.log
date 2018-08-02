@@ -1,0 +1,34 @@
+xhail 0.5.2
+
+calling '/usr/bin/gringo --version' to detect binary matching 'gringo|5.2'
+calling '/usr/bin/clasp --version' to detect binary matching 'clasp|3.3'
+Reading from 'toys/example2.lp'...
+
+Solving...
+
+got end of input with best value 1 and first value 1 (optimal result)
+Generalization  1 support for r(V1).
+/var/folders/x1/_wsv95gd217_mh0v274hr6b40000gn/T/xhail6494254956471783284.tmp:8:7-11: info: atom does not occur in any rule head:
+q(X)
+solver process ended with exit value 20 (expect 30)!
+got no answer set (unsatisfiable)
+Generalization  1 support for q(V1):-s(V1).
+/var/folders/x1/_wsv95gd217_mh0v274hr6b40000gn/T/xhail915663951900893811.tmp:9:7-11: info: atom does not occur in any rule head:
+r(X)
+got end of input with best value 2 and first value 2 (optimal result)
+Answer 1:
+  hypothesis:
+    q(V1):-t(V1),s(V1).
+  uncovered:
+    -
+
+Answers     : 1
+  optimal   : 1
+  shown     : 1
+Calls       : 3
+Time        : 0.604s  (loading: 0.166s  1st answer: 0.600s)
+  abduction : 0.049s
+  deduction : 0.264s
+  induction : 0.087s
+
+        0.77 real         0.90 user         0.17 sys

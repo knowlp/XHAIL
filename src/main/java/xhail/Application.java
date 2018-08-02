@@ -36,6 +36,7 @@ public class Application implements Callable<Answers> {
 	 * The <code>PATHS</code> where <code>gringo</code> and <code>clasp</code>
 	 * most likely are.
 	 */
+	public static int maxcost=10;
 	private static final Path CWD = Paths.get("./").toAbsolutePath().normalize();
 	private static final Path[] PATHS = { CWD, Paths.get("/Library/Gringo/"), Paths.get("/Library/Clasp/"), Paths.get("/usr/bin/gringo/"),
 			Paths.get("/usr/bin/clasp/"), Paths.get("/usr/bin/"), Paths.get("/usr/local/gringo/"), Paths.get("/usr/local/clasp/"), Paths.get("/usr/local/"),
@@ -53,6 +54,12 @@ public class Application implements Callable<Answers> {
 			builder.missingParameter();
 		else
 			for (int i = 0; i < args.length; i++)
+			{
+				if(args[i].matches("\\d+"))
+					{
+					maxcost=Integer.parseInt(args[i]);
+					continue;
+					}
 				switch (args[i]) {
 					case "-a":
 					case "--all":
@@ -154,12 +161,13 @@ public class Application implements Callable<Answers> {
 						else
 							builder.setPrune(args[++i]);
 						break;
-
+				
 					default:
 						builder.addSource(args[i]);
+						}
 				}
 		Config config = builder.build();
-
+        
 		Application application = new Application(config);
 		application.execute();
 	}
