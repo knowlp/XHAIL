@@ -788,66 +788,6 @@ public class Grounding implements Solvable {
 					kernel = set.toArray(new Clause[set.size()]);
 
 			}
-
-
-			/*
-
-			for (Atom alpha : delta)
-				for (ModeH head : problem.getModeHs()) {
-					Scheme scheme = head.getScheme();
-					if (SchemeTerm.subsumes(scheme, alpha, facts)) {
-						Clause.Builder builder = new Clause.Builder().setHead(//
-								new Atom.Builder(alpha).setWeight(head.getWeigth()).setPriority(head.getPriority())
-										.build());
-						Collection<Term> substitutes = SchemeTerm.findSubstitutes(scheme, alpha);
-						if (null != substitutes) {
-							int level = 0;
-							Set<Term> usables = new HashSet<>(substitutes);
-							Set<Term> used = new HashSet<Term>();
-							Set<Term> next = new HashSet<Term>();
-							while (!usables.isEmpty()) {
-								level += 1;
-								for (ModeB mode : batoms) {
-									scheme = mode.getScheme();
-									if (mode.isNegated()) {
-										Map<Atom, Collection<Term>> found = SchemeTerm.generateAndOutput(scheme,
-												usables, table, facts);
-										for (Atom atom : found.keySet()) {
-											System.out.println(atom);
-											builder.addLiteral(new Literal.Builder( //
-													new Atom.Builder(atom).setWeight(mode.getWeigth())
-															.setPriority(mode.getPriority()).build())
-																	.setNegated(mode.isNegated()).setLevel(level)
-																	.build());
-											next.addAll(found.get(atom));
-										}
-									} else {
-										Map.Entry<Collection<Atom>, Collection<Term>> found = SchemeTerm
-												.matchAndOutput(scheme, table.get(scheme), usables);
-										for (Atom atom : found.getKey()) {
-											builder.addLiteral(new Literal.Builder( //
-													new Atom.Builder(atom).setWeight(mode.getWeigth())
-															.setPriority(mode.getPriority()).build())
-																	.setNegated(mode.isNegated()).setLevel(level)
-																	.build());
-										}
-										next.addAll(found.getValue());
-									}
-								}
-								used.addAll(usables);
-								next.removeAll(used);
-								usables.clear();
-								usables.addAll(next);
-								next.clear();
-							}
-							set.add(builder.build());
-							kernel = set.toArray(new Clause[set.size()]);
-
-						}
-						kernel = set.toArray(new Clause[set.size()]);
-					}
-				}*/
-
 			kernel = set.toArray(new Clause[set.size()]);
 		}
 		return kernel;
