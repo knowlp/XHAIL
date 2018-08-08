@@ -1,5 +1,5 @@
 /**
- *
+ * 
  */
 package xhail.core.entities;
 
@@ -451,11 +451,10 @@ public class Grounding implements Solvable {
 		if (null == kernel) {
 			// Logger.message("getKernel");
 			Set<Clause> set = new LinkedHashSet<>();
-
             String insp = "";
 			File temp = null;
 			//temp = new File("src/input1.lp");
-
+			
 			BufferedWriter bw = null;
 			try {
 				temp = File.createTempFile("tmpf1", ".lp");
@@ -481,7 +480,7 @@ public class Grounding implements Solvable {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-
+          
 			insp += "\n";
 			String modeB, body, btmp = null;
 			int typecnt = 0;
@@ -502,7 +501,7 @@ public class Grounding implements Solvable {
 					bargs[k] = bargs[k].replaceAll("[^a-zA-Z]", "");
 				if (modeB.contains("not")) {
 					try {
-						bww.write(" 1 { var_value(VarId,X) : not " + body + "(X), " + bargs[0] + "(X)" + " } 1 :-\n" +
+						bww.write(" 1 { var_value(VarId,X) : not " + body + "(X), " + bargs[0] + "(X)" + " } 1 :-\n" + 
 								"			use_body_pred(id_idx(Id,Idx)," + body + ",neg," + bargs.length + "),\n"
 								+ "			bind_bvar(id_idx(Id,Idx),neg,1,VarId).\n");
 					} catch (IOException e) {
@@ -528,7 +527,7 @@ public class Grounding implements Solvable {
 						bargs[bargs.length - 1] = bargs[bargs.length - 1].replaceAll("[^A-Za-z]+", "");
 					}
 					for (int j = 0; j < bargs.length; j++) {
-						insp += "rarg(" + counter + "," + (j + 1) + "," + bargs[j] + ").\n";
+						insp += "rarg(" + counter + "," + (j) + "," + bargs[j] + ").\n";
 						insp += "type_id(" + bargs[j] + "," + typecnt + ").\n";
 						typecnt += 1;
 					}
@@ -559,7 +558,7 @@ public class Grounding implements Solvable {
 					hargs = htmp.split("\\(")[1].split(",");
 
 				if (!modeH.contains("not")) {
-					insp += "hpred(" + counter + "," + headt + "," + hargs.length + ").\n";
+					insp += "tpred(" + counter + "," + headt + "," + hargs.length + ").\n";
 					try {
 
 						bww.write("true(" + headt + "(X)):-\n" + "	use_head_pred(Id," + headt
@@ -585,7 +584,7 @@ public class Grounding implements Solvable {
 					}
 
 					for (int k = 0; k < hargs.length; k++) {
-						insp += "targ(" + counter + "," + (k + 1) + "," + hargs[k] + ").\n";
+						insp += "targ(" + counter + "," + (k) + "," + hargs[k] + ").\n";
 					}
 					counter += 1;
 				}
@@ -596,14 +595,11 @@ public class Grounding implements Solvable {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-
-			// System.out.println(all);
+            
 			insp += "\n";
 			String line = "";
-			//ClassLoader loader = getClass().getClassLoader();
-			//System.out.println(Application.class.getResource("hypgen.lp"));
 			InputStream is = Application.class.getResourceAsStream("hypgen.lp");
-		  InputStreamReader isr = new InputStreamReader(is);
+		    InputStreamReader isr = new InputStreamReader(is);
 			BufferedReader br = new BufferedReader(isr);
 			try {
 				while ((line = br.readLine()) != null )
@@ -619,13 +615,15 @@ public class Grounding implements Solvable {
 				// TODO Auto-generated catch block
 				e2.printStackTrace();
 			}
-
 			try {
 				bw.close();
 			} catch (IOException e2) {
 				// TODO Auto-generated catch block
 				e2.printStackTrace();
 			}
+			List<ModeB> batoms = new ArrayList<ModeB>();
+			if(getModeBs().length>0 || getModeHs().length>0)
+			{
 			String cmd = "clingo --quiet=1 --const maxcost=" + Application.maxcost + " 0 " + temp.getAbsolutePath();
 			List<String> li = new ArrayList<String>(Arrays.asList(cmd.split(" ")));
 			ProcessBuilder bld = new ProcessBuilder(li);
@@ -650,8 +648,8 @@ public class Grounding implements Solvable {
 			String pattern = "Answer: (\\d*.{1," + txt.length() + "})SATISFIABLE";
 			Pattern r = Pattern.compile(pattern);
 			Matcher m = r.matcher(txt);
-			m.find();
 			String answer;
+			m.find();
 			answer = m.group(1);
 			String[] arr = answer.split(" ");
 			arr[0] = arr[0].substring(1, arr[0].length());
@@ -663,6 +661,12 @@ public class Grounding implements Solvable {
 					e.printStackTrace();
 				}
 			try {
+				bww.write("#show use_body_pred/3. \n  #show use_head_pred/3. \n #show bind_hvar/4. \n #show bind_bvar/4.");
+			} catch (IOException e2) {
+				// TODO Auto-generated catch block
+				e2.printStackTrace();
+			}
+			try {
 				bww.close();
 			} catch (IOException e1) {
 				// TODO Auto-generated catch block
@@ -671,32 +675,22 @@ public class Grounding implements Solvable {
 
 			String command = "clingo --quiet=1 --const maxcost=" + Application.maxcost + " 0 " + tmp.getAbsolutePath();
 			List<String> list = new ArrayList<String>(Arrays.asList(command.split(" ")));
-			ProcessBuilder bl = new ProcessBuilder(list);
-			bl.redirectErrorStream(true);
-			try {
-				Process p = bl.start();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			
 			Runtime run = Runtime.getRuntime();
 			Process proc = null;
 			try {
 				proc = run.exec(command);
-			} catch (IOException e) {
+			} catch (IOException e1) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				e1.printStackTrace();
 			}
 
 			BufferedReader input = new BufferedReader(new InputStreamReader(proc.getInputStream()));
 			String text = input.lines().collect(Collectors.joining());
-			// System.out.println(text);
-			String pat = "Answer: (\\d*.{1," + txt.length() + "})SATISFIABLE";
+			String pat = "Answer: (\\d*.{1," + txt.length() + "})SATISFIABLE";	
 			Pattern re = Pattern.compile(pat);
 			Matcher ma = re.matcher(text);
 			ma.find();
-
-			List<ModeB> batoms = new ArrayList<ModeB>();
 			if (!(text.contains("UNSATISFIABLE") || text.contains("UNKNOWN"))) {
 				text = ma.group(0);
 			}
@@ -706,6 +700,7 @@ public class Grounding implements Solvable {
 			String ans1 = "";
 			String ans4 = "";
 			if (!(text.contains("UNSATISFIABLE") || text.contains("UNKNOWN")))
+			{
 				while (ma.find()) // for each use_body_pred (body atoms)
 				{
 					ans1 = ma.group(0);
@@ -734,7 +729,7 @@ public class Grounding implements Solvable {
 						mavar.find();
 						ans4 = mavar.group(0);
 					}
-
+                    
 					if (ans1.contains("neg")) {
 						ModeB b = Parser.parseModeB("not " + StringUtils.substringBetween(ans1, "),", ",") + "(+"
 								+ StringUtils.substringBetween(ans4, "),", ")") + ")");
@@ -744,19 +739,28 @@ public class Grounding implements Solvable {
 								+ StringUtils.substringBetween(ans4, "),", ")") + ")");
 						batoms.add(b);
 					}
-
+					
 				}
+			}
 			else
 				batoms = Arrays.asList(getModeBs());
-
-
+			}
+			else
+			{
+				System.out.println("No mode bias is defined in the example");
+				return set.toArray(new Clause[set.size()]);
+			}
+			
+		
 			Clause.Builder builder;
 			for(Atom alpha : delta)
 			{
-					Scheme scheme = getModeHs()[0].getScheme();
+				for(ModeH h:getModeHs())
+				{
+					Scheme scheme = h.getScheme();
 					Collection<Term> substitutes = SchemeTerm.findSubstitutes(scheme, alpha);
 					builder = new Clause.Builder().setHead(//
-							new Atom.Builder(alpha).setWeight(getModeHs()[0].getWeigth()).setPriority(getModeHs()[0].getPriority())
+							new Atom.Builder(alpha).setWeight(h.getWeigth()).setPriority(h.getPriority())
 							.build());
 					Set<Term> usables = new HashSet<>(substitutes);
 					for (ModeB mode : batoms)
@@ -767,7 +771,7 @@ public class Grounding implements Solvable {
 										usables, table, facts);
 								for (Atom atom : found.keySet()) {
 									builder.addLiteral(new Literal.Builder( //
-											new Atom.Builder(atom).build())
+											new Atom.Builder(atom).build()) 
 															.setNegated(mode.isNegated())
 															.build());
 			}
@@ -781,18 +785,21 @@ public class Grounding implements Solvable {
 															.setNegated(mode.isNegated())
 															.build());
 								}
-
-							}
+							
+							}			
 			}
 					set.add(builder.build());
 					kernel = set.toArray(new Clause[set.size()]);
-
+			
 			}
+			
 			kernel = set.toArray(new Clause[set.size()]);
+		}
 		}
 		return kernel;
 
 	}
+	
 
 	public final ModeB[] getModeBs() {
 		return problem.getModeBs();
