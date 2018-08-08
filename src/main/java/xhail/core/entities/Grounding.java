@@ -452,6 +452,7 @@ public class Grounding implements Solvable {
 			// Logger.message("getKernel");
 			Set<Clause> set = new LinkedHashSet<>();
             String insp = "";
+            int modeBlen = getModeBs().length;
 			File temp = null;
 			//temp = new File("src/input1.lp");
 			
@@ -466,9 +467,9 @@ public class Grounding implements Solvable {
 
 			File tmp = null;
 			BufferedWriter bww = null;
-			//tmp = new File("src/input2.lp");
+			tmp = new File("src/input2.lp");
 			try {
-				tmp = File.createTempFile("tmpf2", ".lp");
+				//tmp = File.createTempFile("tmpf2", ".lp");
 				bww = new BufferedWriter(new FileWriter(tmp));
 				for (String s : getBackg()) {
 					bww.write(s + "\n");
@@ -487,7 +488,7 @@ public class Grounding implements Solvable {
 			String[] bargs = new String[0];
 			int counter = 1;
 
-			for (int i = 0; i < getModeBs().length; i++) {
+			for (int i = 0; i < modeBlen; i++) {
 				modeB = getModeBs()[i].toString();
 				if (modeB.contains("not"))
 					btmp = modeB.split(" ")[2].toString();
@@ -532,7 +533,7 @@ public class Grounding implements Solvable {
 				}
 			}
 
-			if (getModeBs().length > 0)
+			if (modeBlen > 0)
 				try {
 					bww.write(":- var_value(VarId,X1), var_value(VarId,X2), X1 < X2.\n");
 				} catch (IOException e4) {
@@ -542,7 +543,7 @@ public class Grounding implements Solvable {
 
 			String modeH, headt, htmp = null;
 			String[] hargs = new String[0];
-
+            boolean allSingle=true;
 			for (int i = 0; i < getModeHs().length; i++) {
 				modeH = getModeHs()[i].toString();
 				if (modeH.contains("not"))
@@ -553,13 +554,19 @@ public class Grounding implements Solvable {
 				headt = headt.replaceAll("\\.", "");
 				if (htmp.split("\\(").length > 1)
 					hargs = htmp.split("\\(")[1].split(",");
-
+				
+				boolean singleAtom= hargs.length == 0;
+				if(singleAtom)
+			    		insp+="type("+headt+").\n";
+				else
+					allSingle=false;
+				
 				if (!modeH.contains("not")) {
 					insp += "tpred(" + counter + "," + headt + "," + hargs.length + ").\n";
 					try {
 
 						bww.write("true(" + headt + "(X)):-\n" + "	use_head_pred(Id," + headt
-								+ ",1), bind_hvar(1,VarId), var_value(VarId,X).\n" + "");
+								+","+hargs.length+"), bind_hvar(1,VarId), var_value(VarId,X).\n" + "");
 
 						for (Atom alpha : delta)
 							try {
@@ -599,7 +606,8 @@ public class Grounding implements Solvable {
 			BufferedReader br = new BufferedReader(isr);
 			try {
 				while ((line = br.readLine()) != null )
-					insp += line + "\n";
+					if(!(allSingle && line.contains("targ")) && !(modeBlen == 0 && (line.contains("rpred") || line.contains("rarg"))))
+				     	insp += line + "\n";
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -618,7 +626,7 @@ public class Grounding implements Solvable {
 				e2.printStackTrace();
 			}
 			List<ModeB> batoms = new ArrayList<ModeB>();
-			if(getModeBs().length>0 || getModeHs().length>0)
+			if(modeBlen>0 || getModeHs().length>0)
 			{
 			String cmd = "clingo --quiet=1 --const maxcost=" + Application.maxcost + " 0 " + temp.getAbsolutePath();
 			List<String> li = new ArrayList<String>(Arrays.asList(cmd.split(" ")));
@@ -642,6 +650,7 @@ public class Grounding implements Solvable {
 			BufferedReader stdInput = new BufferedReader(new InputStreamReader(pr.getInputStream()));
 			String txt = stdInput.lines().collect(Collectors.joining());
 			String pattern = "Answer: (\\d*.{1," + txt.length() + "})SATISFIABLE";
+			
 			Pattern r = Pattern.compile(pattern);
 			Matcher m = r.matcher(txt);
 			String answer;
@@ -657,7 +666,10 @@ public class Grounding implements Solvable {
 					e.printStackTrace();
 				}
 			try {
-				bww.write("#show use_body_pred/3. \n  #show use_head_pred/3. \n #show bind_hvar/4. \n #show bind_bvar/4.");
+				if(getModeHs().length>0)
+					bww.write( "#show use_head_pred/3. \n #show bind_hvar/2." );
+				if(modeBlen>0)
+				bww.write("#show use_body_pred/3. \n #show bind_bvar/2.");
 			} catch (IOException e2) {
 				// TODO Auto-generated catch block
 				e2.printStackTrace();
@@ -668,7 +680,7 @@ public class Grounding implements Solvable {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-
+            
 			String command = "clingo --quiet=1 --const maxcost=" + Application.maxcost + " 0 " + tmp.getAbsolutePath();
 			List<String> list = new ArrayList<String>(Arrays.asList(command.split(" ")));
 			
@@ -680,7 +692,7 @@ public class Grounding implements Solvable {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-
+           
 			BufferedReader input = new BufferedReader(new InputStreamReader(proc.getInputStream()));
 			String text = input.lines().collect(Collectors.joining());
 			String pat = "Answer: (\\d*.{1," + txt.length() + "})SATISFIABLE";	
@@ -697,9 +709,9 @@ public class Grounding implements Solvable {
 			String ans4 = "";
 			if (!(text.contains("UNSATISFIABLE") || text.contains("UNKNOWN")))
 			{
+				
 				while (ma.find()) // for each use_body_pred (body atoms)
 				{
-					ans1 = ma.group(0);
 					for (int i = 0; i < Integer
 							.parseInt(StringUtils.removeEnd(StringUtils.substringAfterLast(ans1, ","), ")")); i++)// for
 																													// as
@@ -739,14 +751,13 @@ public class Grounding implements Solvable {
 				}
 			}
 			else
-				batoms = Arrays.asList(getModeBs());
+			  batoms = Arrays.asList(getModeBs());
 			}
 			else
 			{
 				System.out.println("No mode bias is defined in the example");
 				return set.toArray(new Clause[set.size()]);
 			}
-			
 			/*
 			for (Atom alpha : delta)
 				for (ModeH head : problem.getModeHs()) {
@@ -797,6 +808,7 @@ public class Grounding implements Solvable {
 			Clause.Builder builder;
 			for(Atom alpha : delta)
 			{
+				System.out.println(alpha);
 				for(ModeH h:getModeHs())
 				{
 					Scheme scheme = h.getScheme();
