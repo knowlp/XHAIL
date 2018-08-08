@@ -522,10 +522,7 @@ public class Grounding implements Solvable {
 						e.printStackTrace();
 					}
 					insp += "rpred(" + counter + "," + body + "," + bargs.length + ").\n";
-					if (bargs.length > 0) {
-						bargs[0] = bargs[0].replaceAll("[^A-Za-z]+", "");
-						bargs[bargs.length - 1] = bargs[bargs.length - 1].replaceAll("[^A-Za-z]+", "");
-					}
+
 					for (int j = 0; j < bargs.length; j++) {
 						insp += "rarg(" + counter + "," + (j) + "," + bargs[j] + ").\n";
 						insp += "type_id(" + bargs[j] + "," + typecnt + ").\n";
@@ -578,10 +575,9 @@ public class Grounding implements Solvable {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					if (hargs.length > 0) {
-						hargs[0] = hargs[0].replaceAll("[^A-Za-z]+", "");
-						hargs[hargs.length - 1] = hargs[hargs.length - 1].replaceAll("[^A-Za-z]+", "");
-					}
+					
+					for(int l=0;l<hargs.length;l++)
+						hargs[l] = hargs[l].replaceAll("[^A-Za-z]+", "");
 
 					for (int k = 0; k < hargs.length; k++) {
 						insp += "targ(" + counter + "," + (k) + "," + hargs[k] + ").\n";
@@ -642,7 +638,7 @@ public class Grounding implements Solvable {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-
+            
 			BufferedReader stdInput = new BufferedReader(new InputStreamReader(pr.getInputStream()));
 			String txt = stdInput.lines().collect(Collectors.joining());
 			String pattern = "Answer: (\\d*.{1," + txt.length() + "})SATISFIABLE";
@@ -751,6 +747,52 @@ public class Grounding implements Solvable {
 				return set.toArray(new Clause[set.size()]);
 			}
 			
+			/*
+			for (Atom alpha : delta)
+				for (ModeH head : problem.getModeHs()) {
+					Scheme scheme = head.getScheme();
+					if (SchemeTerm.subsumes(scheme, alpha, facts)) {
+						Clause.Builder builder = new Clause.Builder().setHead(//
+								new Atom.Builder(alpha).setWeight(head.getWeigth()).setPriority(head.getPriority()).build());
+
+						Collection<Term> substitutes = SchemeTerm.findSubstitutes(scheme, alpha);
+						if (null != substitutes) {
+							int level = 0;
+							Set<Term> usables = new HashSet<>(substitutes);
+							Set<Term> used = new HashSet<Term>();
+							Set<Term> next = new HashSet<Term>();
+							while (!usables.isEmpty()) {
+								level += 1;
+								for (ModeB mode : problem.getModeBs()) {
+									scheme = mode.getScheme();
+									if (mode.isNegated()) {
+										Map<Atom, Collection<Term>> found = SchemeTerm.generateAndOutput(scheme, usables, table, facts);
+										for (Atom atom : found.keySet()) {
+											builder.addLiteral(new Literal.Builder( //
+													new Atom.Builder(atom).setWeight(mode.getWeigth()).setPriority(mode.getPriority()).build() //
+											).setNegated(mode.isNegated()).setLevel(level).build());
+											next.addAll(found.get(atom));
+										}
+									} else {
+										Map.Entry<Collection<Atom>, Collection<Term>> found = SchemeTerm.matchAndOutput(scheme, table.get(scheme), usables);
+										for (Atom atom : found.getKey())
+											builder.addLiteral(new Literal.Builder( //
+													new Atom.Builder(atom).setWeight(mode.getWeigth()).setPriority(mode.getPriority()).build() //
+											).setNegated(mode.isNegated()).setLevel(level).build());
+										next.addAll(found.getValue());
+									}
+								}
+								used.addAll(usables);
+								next.removeAll(used);
+								usables.clear();
+								usables.addAll(next);
+								next.clear();
+							}
+						}
+						set.add(builder.build());
+					}
+				}
+			*/
 		
 			Clause.Builder builder;
 			for(Atom alpha : delta)
