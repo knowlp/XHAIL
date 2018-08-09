@@ -1,0 +1,7 @@
+language:
+java
+
+script:
+- cd examples
+- ./runall.sh
+
