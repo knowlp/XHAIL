@@ -467,9 +467,8 @@ public class Grounding implements Solvable {
 
 			File tmp = null;
 			BufferedWriter bww = null;
-			tmp = new File("src/input2.lp");
 			try {
-				//tmp = File.createTempFile("tmpf2", ".lp");
+				tmp = File.createTempFile("tmpf2", ".lp");
 				bww = new BufferedWriter(new FileWriter(tmp));
 				for (String s : getBackg()) {
 					bww.write(s + "\n");
