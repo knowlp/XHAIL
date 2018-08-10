@@ -1,6 +1,7 @@
 
 language: java
-
+install:
+  - mkdir ~/.local/bin
 script: 
  - ./gradlew check
  - cd examples
