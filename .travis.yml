@@ -1,9 +1,6 @@
 
 language: java
-install:
-  - mkdir ~/.local/bin
 script: 
  - ./gradlew check
- - cd examples
- - ./maxcost-test.sh
+ - ./examples/maxcost-test
 
