@@ -1,3 +1,7 @@
-language:java
-  gradle assemble ./gradlew build
-  script:cd examples./maxcost-test.sh
+
+language: java
+
+script: 
+ - ./gradlew check  
+ - cd examples
+ - ./maxcost-test.sh
