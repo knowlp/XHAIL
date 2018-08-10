@@ -1,7 +1,10 @@
 language:
 java
 
+gradle assemble
+./gradlew build
+
 script:
 - cd examples
-- ./runall.sh
+- ./maxcost-test.sh
 
