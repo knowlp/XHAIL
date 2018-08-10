@@ -2,6 +2,6 @@
 language: java
 
 script: 
- - ./gradlew check  
+ - build gradle
  - cd examples
  - ./maxcost-test.sh
