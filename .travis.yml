@@ -1,0 +1,8 @@
+
+language: java
+
+script: 
+ - ./gradlew check
+ - cd examples
+ - ./maxcost-test.sh
+
