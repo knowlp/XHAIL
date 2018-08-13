@@ -1,4 +1,5 @@
 #!/bin/bash
+java -jar xhail-0.5.2/xhail.jar -b -c /usr/bin/clasp -g /usr/bin/gringo examples/toys/ec.lp 5
 
 
 for ex in examples/toys/*.lp; do
