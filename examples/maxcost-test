@@ -1,5 +1,5 @@
 /
-java -jar xhail-0.5.2/xhail.jar -b -c /$HOME/miniconda/bin/clasp -g /$HOME/miniconda/bin/gringo $ex $cost
+java -jar ../xhail-0.5.2/xhail.jar -b -c /$HOME/miniconda/bin/clasp -g /$HOME/miniconda/bin/gringo $ex $cost
 pwd
 
 if [ $? != 0 ]; then
