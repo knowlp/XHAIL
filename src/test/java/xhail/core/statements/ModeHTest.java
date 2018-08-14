@@ -89,11 +89,8 @@ public class ModeHTest {
 		for (String string : result)
 			System.out.println(string);
 		assertNotNull("Mode1: clauses can not be null", result);
-		assertEquals("Mode1: clauses must have size 5", LINE_1.length, 5);
+		assertEquals("Mode1: clauses must have size 5", result.length, 5);
 		for (int i = 0; i < LINE_1.length; i++) 
-			{
 			assertEquals(String.format("Mode1: clause #%d must be '%s'", i, LINE_1[i]), LINE_1[i], result[i]);
-	}
 }
-
 }
