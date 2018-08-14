@@ -76,10 +76,12 @@ public class ModeHTest {
 
 	private static final String[] LINE_1 = { //
 		"% #modeh happens(use($sugar),+time) :0-5 @2.", //
-		"0 { abduced_happens(use(V1),V2) :sugar(V1) :time(V2) } 5.", //
-		"#minimize[ abduced_happens(use(V1),V2) =1 @2 :sugar(V1) :time(V2) ].",
-		"happens(use(V1),V2):-abduced_happens(use(V1),V2),sugar(V1),time(V2)."//
+		"0 { abduced_happens(use(V1),V2) :sugar(V1),time(V2) } 5.", //
+		":~ abduced_happens(use(V1),V2) ,sugar(V1),time(V2). [1@2,abduced_happens(use(V1),V2)]",
+		"happens(use(V1),V2):-abduced_happens(use(V1),V2),sugar(V1),time(V2).",
+		"number_abduced(1,V) :- V = #count { abduced_happens(use(V1),V2) :sugar(V1),time(V2) }."
 	};
+
 
 	@Test
 	public void testClauses1() {
@@ -87,9 +89,11 @@ public class ModeHTest {
 		for (String string : result)
 			System.out.println(string);
 		assertNotNull("Mode1: clauses can not be null", result);
-		assertEquals("Mode1: clauses must have size 4", LINE_1.length, result.length);
-		for (int i = 0; i < LINE_1.length; i++)
+		assertEquals("Mode1: clauses must have size 5", LINE_1.length, 5);
+		for (int i = 0; i < LINE_1.length; i++) 
+			{
 			assertEquals(String.format("Mode1: clause #%d must be '%s'", i, LINE_1[i]), LINE_1[i], result[i]);
 	}
+}
 
 }

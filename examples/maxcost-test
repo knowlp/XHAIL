@@ -1,11 +1,8 @@
-#!/bin/bash
-java -jar xhail-0.5.2/xhail.jar -b -c /usr/bin/clasp -g /usr/bin/gringo examples/toys/ec.lp 5
 
-
-for ex in examples/toys/*.lp; do
+for ex in toys/*.lp; do
   for cost in {5..10}; do
-    this=`basename $ex`
-    gtimeout 10s time java -jar xhail-0.5.2/xhail.jar -b -c /usr/bin/clasp -g /usr/bin/gringo $ex $cost 2>&1 | grep 'ERROR\|meaningful\|Caused by\|No match found' &> /dev/null
+    this = `basename $ex`
+    gtimeout 10s time java -jar ../xhail-0.5.2/xhail.jar -b -c /usr/bin/clasp -g /usr/bin/gringo $ex $cost 2>&1 | grep 'ERROR\|meaningful\|Caused by\|No match found' &> /dev/null
     if [ $? != 0 ]; then
       echo "maxcost found for $ex"
       break
