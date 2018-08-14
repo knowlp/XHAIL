@@ -79,7 +79,7 @@ public class ModeHTest {
 		"0 { abduced_happens(use(V1),V2) :sugar(V1),time(V2) } 5.", //
 		":~ abduced_happens(use(V1),V2) ,sugar(V1),time(V2). [1@2,abduced_happens(use(V1),V2)]",
 		"happens(use(V1),V2):-abduced_happens(use(V1),V2),sugar(V1),time(V2).",
-		"number_abduced(1,V) :- V = #count { abduced_happens(use(V1),V2) :sugar(V1),time(V2) }."
+		"number_abduced(0,V) :- V = #count { abduced_happens(use(V1),V2) :sugar(V1),time(V2) }."
 	};
 
 
