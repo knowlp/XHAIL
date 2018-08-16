@@ -1,4 +1,6 @@
-XHAIL https://travis-ci.com/selineyp/XHAIL.svg?branch=temp
+
+XHAIL
+![Build Status](https://travis-ci.com/selineyp/XHAIL.svg?branch=temp)
 =====
 
 **XHAIL** *(eXtended Hybrid Abductive Inductive Learning)* is a nonmonotonic ILP *(Inductive Logic Programming)* system that combines *deductive* (consequence-based), *abductive* (assumption-based) and *inductive* (generalisation-based) inference types within a common logical framework.
