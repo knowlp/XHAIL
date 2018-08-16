@@ -12,9 +12,10 @@ before_install:
 install:
  - conda create -q -n test python=$TRAVIS_PYTHON_VERSION
  - source activate test
- - conda install -c potassco clingo
+ - conda install -c potassco clingo=5.2.2
 script: 
  - ./gradlew check
+ - gradle installDist
  - cd examples/
  - ./maxcost-test
 
