@@ -3,8 +3,16 @@
  */
 package xhail;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
@@ -13,6 +21,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import xhail.core.Config;
 import xhail.core.Dialler;
@@ -166,8 +176,8 @@ public class Application implements Callable<Answers> {
 						builder.addSource(args[i]);
 						}
 				}
+		
 		Config config = builder.build();
-        
 		Application application = new Application(config);
 		application.execute();
 	}
@@ -179,8 +189,8 @@ public class Application implements Callable<Answers> {
 	private Application(Config config) {
 		if (null == config)
 			throw new IllegalArgumentException("Illegal 'config' argument in Application(Config): " + config);
-		this.config = config;
-
+		this.config=config;
+		
 		if (config.isHelp())
 			Logger.help();
 		if (config.isVersion())
@@ -229,7 +239,6 @@ public class Application implements Callable<Answers> {
 				Logger.error(message);
 			}
 		}
-
 		Problem.Builder problem = new Problem.Builder(config);
 		if (config.hasSources())
 			for (Path path : config.getSources()) {
@@ -240,7 +249,113 @@ public class Application implements Callable<Answers> {
 			Logger.message("Reading from 'stdin'...");
 			problem.parse(System.in);
 		}
-		this.problem = problem.build();
+		Problem prob= problem.build();
+	
+		  if(prob.hasDomains())
+		    {
+				Path p=config.getSources()[0];
+				BufferedReader br=null;
+				try {
+					br = new BufferedReader(new FileReader(p.toString()));
+				} catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				StringBuffer sb=new StringBuffer("");
+				String line;
+				try {
+					while((line=br.readLine())!=null)
+					{
+						//Store each valid line in the string buffer
+						if(!line.contains("#domain"))
+							sb.append(line+"\n");
+					}
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				Map<String, String[]> domains = new HashMap<String, String[]>();
+				for(String s:prob.getDomains())
+				{
+					
+					String d=s.split(" ")[1].split("\\(")[0]; //domain name
+					String[] vars = s.split(" ")[1].split("\\(")[1].replaceAll("\\).","").split(";");
+					domains.put(d, vars);
+				}
+			 
+				String[] lines = sb.toString().split("\n");
+				for(Map.Entry<String,String[]> domain:domains.entrySet())
+					for(int i=0;i<lines.length;i++)
+					{
+					  
+					   if(!lines[i].startsWith("%"))
+					   {
+					   String pattern = "(?:\\(|,)(" + domain.getValue()[0] +"\\d{0,5})(?:\\)|,)";
+					   Pattern r = Pattern.compile(pattern);
+					   Matcher m = r.matcher(lines[i]);
+			           String vars;
+		 	           while(m.find())
+		 	           {
+		 	        	   vars=m.group(1);
+		 	        	   vars=vars.replaceAll("[^A-Za-z0-9]", "");
+		 	           if(!lines[i].contains(domain.getKey() + "("+vars+")"))
+		 	           {
+		 	        	   lines[i]=lines[i].replaceAll("\\.","");
+		 	        	   lines[i]=lines[i]+","+domain.getKey() + "("+vars+")"+".";
+		 	           }
+					}
+					}
+					   }
+				
+				try {
+					br.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				FileWriter fw=null;
+				File temp=null;
+				try {
+					temp = File.createTempFile("example", ".lp");
+				} catch (IOException e2) {
+					// TODO Auto-generated catch block
+					e2.printStackTrace();
+				}
+				try {
+					fw = new FileWriter(temp);
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				try {
+					fw.write(String.join("\n",lines));
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				try {
+					fw.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		   
+			Config.Builder builder = new Config.Builder();
+			builder.clearSources();
+			builder.addSource(temp.getAbsolutePath().toString());
+			builder.setBlind(config.isBlind()); // these options are specific to the test script
+			builder.setClasp(config.getClasp().toString());
+			builder.setGringo(config.getGringo().toString());
+			//need to set all of the options
+			Problem.Builder pb = new Problem.Builder(builder.build());
+			pb.parse(temp.toPath());
+		    this.problem = pb.build();
+		 }
+		  else
+			this.problem = prob;
+		  
 		Answers.loaded();
 	}
 

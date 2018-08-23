@@ -33,7 +33,8 @@ public class Abstract {
 
 		Dialler dialer = new Dialler.Builder(config, problem).build();
 		
-		for (Collection<String> answer : dialer.execute().getValue()) {
+		for (Collection<String> answer : dialer.execute(10).getValue())//dummy iter
+		 {
 			Grounding grounding = new Grounding.Builder(problem).parse(answer).build();
 						
 			System.out.println(grounding.getKernel().length);

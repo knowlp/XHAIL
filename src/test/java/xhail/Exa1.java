@@ -33,7 +33,7 @@ public class Exa1 {
 
 		Dialler dialler = new Dialler.Builder(config, problem).build();
 
-		Map.Entry<Values, Collection<Collection<String>>> result = dialler.execute();
+		Map.Entry<Values, Collection<Collection<String>>> result = dialler.execute(10);
 
 		for (Collection<String> answer : result.getValue()) {
 			Grounding grounding = new Grounding.Builder(problem).parse(answer).build();

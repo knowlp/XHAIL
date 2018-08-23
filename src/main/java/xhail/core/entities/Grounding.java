@@ -1,6 +1,4 @@
-/**
- *
- */
+
 package xhail.core.entities;
 
 import java.io.BufferedReader;
@@ -451,11 +449,9 @@ public class Grounding implements Solvable {
 		if (null == kernel) {
 			// Logger.message("getKernel");
 			Set<Clause> set = new LinkedHashSet<>();
-
             String insp = "";
+            int modeBlen = getModeBs().length;
 			File temp = null;
-			//temp = new File("src/input1.lp");
-
 			BufferedWriter bw = null;
 			try {
 				temp = File.createTempFile("tmpf1", ".lp");
@@ -467,28 +463,27 @@ public class Grounding implements Solvable {
 
 			File tmp = null;
 			BufferedWriter bww = null;
-			//tmp = new File("src/input2.lp");
 			try {
 				tmp = File.createTempFile("tmpf2", ".lp");
 				bww = new BufferedWriter(new FileWriter(tmp));
-				for (String s : getBackg()) {
+				for (String s : getBackg()) { //writing background knowledge to meta program
 					bww.write(s + "\n");
 				}
 				for (Example e : getExamples()) {
-					bww.write(e.toString().replace("#example ", "") + "\n");
+					bww.write(e.toString().replace("#example ", "") + "\n"); //writing examples to meta program
 				}
 			} catch (IOException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-
-			insp += "\n";
+          
+			insp += "\n"; //string to keep the contents of the hypgen.lp appended with mode bias
 			String modeB, body, btmp = null;
 			int typecnt = 0;
 			String[] bargs = new String[0];
 			int counter = 1;
 
-			for (int i = 0; i < getModeBs().length; i++) {
+			for (int i = 0; i < modeBlen; i++) {
 				modeB = getModeBs()[i].toString();
 				if (modeB.contains("not"))
 					btmp = modeB.split(" ")[2].toString();
@@ -500,16 +495,16 @@ public class Grounding implements Solvable {
 					bargs = btmp.split("\\(")[1].split(",");
 				for (int k = 0; k < bargs.length; k++)
 					bargs[k] = bargs[k].replaceAll("[^a-zA-Z]", "");
-				if (modeB.contains("not")) {
+				if (modeB.contains("not")) { //meta rule for negative mode body
 					try {
-						bww.write(" 1 { var_value(VarId,X) : not " + body + "(X), " + bargs[0] + "(X)" + " } 1 :-\n" +
+						bww.write(" 1 { var_value(VarId,X) : not " + body + "(X), " + bargs[0] + "(X)" + " } 1 :-\n" + 
 								"			use_body_pred(id_idx(Id,Idx)," + body + ",neg," + bargs.length + "),\n"
 								+ "			bind_bvar(id_idx(Id,Idx),neg,1,VarId).\n");
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-				} else {
+				} else { //meta rule for positive mode body
 					try {
 						bww.write(" 1 { var_value(VarId,X) :" + body + "(X) } 1 :-\n"
 								+ "			use_body_pred(id_idx(Id,Idx)," + body + ",pos," + bargs.length + "),\n"
@@ -523,12 +518,9 @@ public class Grounding implements Solvable {
 						e.printStackTrace();
 					}
 					insp += "rpred(" + counter + "," + body + "," + bargs.length + ").\n";
-					if (bargs.length > 0) {
-						bargs[0] = bargs[0].replaceAll("[^A-Za-z]+", "");
-						bargs[bargs.length - 1] = bargs[bargs.length - 1].replaceAll("[^A-Za-z]+", "");
-					}
+
 					for (int j = 0; j < bargs.length; j++) {
-						insp += "rarg(" + counter + "," + (j + 1) + "," + bargs[j] + ").\n";
+						insp += "rarg(" + counter + "," + (j) + "," + bargs[j] + ").\n";
 						insp += "type_id(" + bargs[j] + "," + typecnt + ").\n";
 						typecnt += 1;
 					}
@@ -536,7 +528,7 @@ public class Grounding implements Solvable {
 				}
 			}
 
-			if (getModeBs().length > 0)
+			if (modeBlen > 0) //eluding symmetry
 				try {
 					bww.write(":- var_value(VarId,X1), var_value(VarId,X2), X1 < X2.\n");
 				} catch (IOException e4) {
@@ -546,7 +538,7 @@ public class Grounding implements Solvable {
 
 			String modeH, headt, htmp = null;
 			String[] hargs = new String[0];
-
+            boolean allSingle=true;
 			for (int i = 0; i < getModeHs().length; i++) {
 				modeH = getModeHs()[i].toString();
 				if (modeH.contains("not"))
@@ -557,18 +549,24 @@ public class Grounding implements Solvable {
 				headt = headt.replaceAll("\\.", "");
 				if (htmp.split("\\(").length > 1)
 					hargs = htmp.split("\\(")[1].split(",");
-
+				
+				boolean singleAtom= hargs.length == 0;
+				if(singleAtom) //single atoms treated as 'type'
+			    		insp+="type("+headt+").\n";
+				else
+					allSingle=false;
+				
 				if (!modeH.contains("not")) {
-					insp += "hpred(" + counter + "," + headt + "," + hargs.length + ").\n";
+					insp += "tpred(" + counter + "," + headt + "," + hargs.length + ").\n";
 					try {
 
-						bww.write("true(" + headt + "(X)):-\n" + "	use_head_pred(Id," + headt
-								+ ",1), bind_hvar(1,VarId), var_value(VarId,X).\n" + "");
+						bww.write("true(" + headt + "(X)):-\n" + "	use_head_pred(Id," + headt //binding variables to head
+								+","+hargs.length+"), bind_hvar(1,VarId), var_value(VarId,X).\n" + "");
 
 						for (Atom alpha : delta)
 							try {
 								bww.write(alpha + ".\n");
-								bww.write("good :- true(" + alpha + ").\n");
+								bww.write("good :- true(" + alpha + ").\n"); //if the alpha in delta satisfies the rule, then it is good
 
 							} catch (IOException e3) {
 								// TODO Auto-generated catch block
@@ -579,35 +577,32 @@ public class Grounding implements Solvable {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					if (hargs.length > 0) {
-						hargs[0] = hargs[0].replaceAll("[^A-Za-z]+", "");
-						hargs[hargs.length - 1] = hargs[hargs.length - 1].replaceAll("[^A-Za-z]+", "");
-					}
+					
+					for(int l=0;l<hargs.length;l++)
+						hargs[l] = hargs[l].replaceAll("[^A-Za-z]+", "");
 
 					for (int k = 0; k < hargs.length; k++) {
-						insp += "targ(" + counter + "," + (k + 1) + "," + hargs[k] + ").\n";
+						insp += "targ(" + counter + "," + (k) + "," + hargs[k] + ").\n";
 					}
 					counter += 1;
 				}
 			}
 			try {
-				bww.write(":- not good.");
+				bww.write(":- not good.");//ensuring that at least one alpha in delta is satisfied by the rule
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-
-			// System.out.println(all);
+            
 			insp += "\n";
 			String line = "";
-			//ClassLoader loader = getClass().getClassLoader();
-			//System.out.println(Application.class.getResource("hypgen.lp"));
-			InputStream is = Application.class.getResourceAsStream("hypgen.lp");
-		  InputStreamReader isr = new InputStreamReader(is);
+			InputStream is = Application.class.getResourceAsStream("hypgen.lp");//reading from hypgen.lp
+		    InputStreamReader isr = new InputStreamReader(is);
 			BufferedReader br = new BufferedReader(isr);
 			try {
 				while ((line = br.readLine()) != null )
-					insp += line + "\n";
+					if(!(allSingle && line.contains("targ")) && !(modeBlen == 0 && (line.contains("rpred") || line.contains("rarg"))))
+				     	insp += line + "\n";
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -619,16 +614,18 @@ public class Grounding implements Solvable {
 				// TODO Auto-generated catch block
 				e2.printStackTrace();
 			}
-
 			try {
 				bw.close();
 			} catch (IOException e2) {
 				// TODO Auto-generated catch block
 				e2.printStackTrace();
 			}
-			String cmd = "clingo --quiet=1 --const maxcost=" + Application.maxcost + " 0 " + temp.getAbsolutePath();
+			List<ModeB> batoms = new ArrayList<ModeB>();
+			if(modeBlen>0 || getModeHs().length>0)
+			{
+			String cmd = "clingo --quiet=1 --const maxcost=" + Application.maxcost + " 0 " + temp.getAbsolutePath(); 
 			List<String> li = new ArrayList<String>(Arrays.asList(cmd.split(" ")));
-			ProcessBuilder bld = new ProcessBuilder(li);
+			ProcessBuilder bld = new ProcessBuilder(li); //calling clingo to get head&body predicates to build a rule
 			bld.redirectErrorStream(true);
 			try {
 				Process p = bld.start();
@@ -644,59 +641,58 @@ public class Grounding implements Solvable {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-
+            
 			BufferedReader stdInput = new BufferedReader(new InputStreamReader(pr.getInputStream()));
 			String txt = stdInput.lines().collect(Collectors.joining());
 			String pattern = "Answer: (\\d*.{1," + txt.length() + "})SATISFIABLE";
 			Pattern r = Pattern.compile(pattern);
 			Matcher m = r.matcher(txt);
-			m.find();
 			String answer;
+			m.find();
 			answer = m.group(1);
 			String[] arr = answer.split(" ");
 			arr[0] = arr[0].substring(1, arr[0].length());
 			for (String s : arr)
 				try {
-					bww.write(s + ".\n");
+					bww.write(s + ".\n"); //direct the output to the meta program
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+			try {
+				if(getModeHs().length>0)
+					bww.write( "#show use_head_pred/3. \n #show bind_hvar/2." );
+				if(modeBlen>0)
+				bww.write("#show use_body_pred/3. \n #show bind_bvar/2. ");
+			} catch (IOException e2) {
+				// TODO Auto-generated catch block
+				e2.printStackTrace();
+			}
 			try {
 				bww.close();
 			} catch (IOException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-
-			String command = "clingo --quiet=1 --const maxcost=" + Application.maxcost + " 0 " + tmp.getAbsolutePath();
+            
+			String command = "clingo --quiet=1  0 " + tmp.getAbsolutePath();
 			List<String> list = new ArrayList<String>(Arrays.asList(command.split(" ")));
-			ProcessBuilder bl = new ProcessBuilder(list);
-			bl.redirectErrorStream(true);
-			try {
-				Process p = bl.start();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			
 			Runtime run = Runtime.getRuntime();
 			Process proc = null;
 			try {
-				proc = run.exec(command);
-			} catch (IOException e) {
+				proc = run.exec(command); //running the meta program to get the final rule
+			} catch (IOException e1) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				e1.printStackTrace();
 			}
-
+           
 			BufferedReader input = new BufferedReader(new InputStreamReader(proc.getInputStream()));
 			String text = input.lines().collect(Collectors.joining());
-			// System.out.println(text);
-			String pat = "Answer: (\\d*.{1," + txt.length() + "})SATISFIABLE";
+			String pat = "Answer: (\\d*.{1," + txt.length() + "})SATISFIABLE";	
 			Pattern re = Pattern.compile(pat);
 			Matcher ma = re.matcher(text);
 			ma.find();
-
-			List<ModeB> batoms = new ArrayList<ModeB>();
 			if (!(text.contains("UNSATISFIABLE") || text.contains("UNKNOWN"))) {
 				text = ma.group(0);
 			}
@@ -705,10 +701,11 @@ public class Grounding implements Solvable {
 			ma = re.matcher(text);
 			String ans1 = "";
 			String ans4 = "";
-			if (!(text.contains("UNSATISFIABLE") || text.contains("UNKNOWN")))
+			if (!(text.contains("UNSATISFIABLE") || text.contains("UNKNOWN"))) //output is valid, convert the predicates to a proper rule
+			{
+				
 				while (ma.find()) // for each use_body_pred (body atoms)
 				{
-					ans1 = ma.group(0);
 					for (int i = 0; i < Integer
 							.parseInt(StringUtils.removeEnd(StringUtils.substringAfterLast(ans1, ","), ")")); i++)// for
 																													// as
@@ -734,32 +731,40 @@ public class Grounding implements Solvable {
 						mavar.find();
 						ans4 = mavar.group(0);
 					}
-
-					if (ans1.contains("neg")) {
+                    
+					if (ans1.contains("neg")) { //negative predicates
 						ModeB b = Parser.parseModeB("not " + StringUtils.substringBetween(ans1, "),", ",") + "(+"
 								+ StringUtils.substringBetween(ans4, "),", ")") + ")");
 						batoms.add(b);
-					} else {
+					} else { //positive predicates
 						ModeB b = Parser.parseModeB(StringUtils.substringBetween(ans1, "),", ",") + "(+"
 								+ StringUtils.substringBetween(ans4, "),", ")") + ")");
 						batoms.add(b);
 					}
-
+					
 				}
+			}
 			else
-				batoms = Arrays.asList(getModeBs());
-
-
+			  batoms = Arrays.asList(getModeBs()); //if the meta program fails to return an answer, revert to the old version
+			}
+			else
+			{
+				System.out.println("No mode bias is defined in the example"); //if no mode bias is found, the example cannot be solved
+				return set.toArray(new Clause[set.size()]);
+			}
+		
 			Clause.Builder builder;
 			for(Atom alpha : delta)
 			{
-					Scheme scheme = getModeHs()[0].getScheme();
+				for(ModeH h:getModeHs())
+				{
+					Scheme scheme = h.getScheme();
 					Collection<Term> substitutes = SchemeTerm.findSubstitutes(scheme, alpha);
 					builder = new Clause.Builder().setHead(//
-							new Atom.Builder(alpha).setWeight(getModeHs()[0].getWeigth()).setPriority(getModeHs()[0].getPriority())
+							new Atom.Builder(alpha).setWeight(h.getWeigth()).setPriority(h.getPriority())
 							.build());
 					Set<Term> usables = new HashSet<>(substitutes);
-					for (ModeB mode : batoms)
+					for (ModeB mode : batoms) //using scheme of the body predicates as modeB 
 					{
 						    scheme = mode.getScheme();
 							if (mode.isNegated()) {
@@ -767,7 +772,7 @@ public class Grounding implements Solvable {
 										usables, table, facts);
 								for (Atom atom : found.keySet()) {
 									builder.addLiteral(new Literal.Builder( //
-											new Atom.Builder(atom).build())
+											new Atom.Builder(atom).build()) 
 															.setNegated(mode.isNegated())
 															.build());
 			}
@@ -781,78 +786,21 @@ public class Grounding implements Solvable {
 															.setNegated(mode.isNegated())
 															.build());
 								}
-
-							}
+							
+							}			
 			}
 					set.add(builder.build());
 					kernel = set.toArray(new Clause[set.size()]);
-
+			
 			}
-
-
-			/*
-
-			for (Atom alpha : delta)
-				for (ModeH head : problem.getModeHs()) {
-					Scheme scheme = head.getScheme();
-					if (SchemeTerm.subsumes(scheme, alpha, facts)) {
-						Clause.Builder builder = new Clause.Builder().setHead(//
-								new Atom.Builder(alpha).setWeight(head.getWeigth()).setPriority(head.getPriority())
-										.build());
-						Collection<Term> substitutes = SchemeTerm.findSubstitutes(scheme, alpha);
-						if (null != substitutes) {
-							int level = 0;
-							Set<Term> usables = new HashSet<>(substitutes);
-							Set<Term> used = new HashSet<Term>();
-							Set<Term> next = new HashSet<Term>();
-							while (!usables.isEmpty()) {
-								level += 1;
-								for (ModeB mode : batoms) {
-									scheme = mode.getScheme();
-									if (mode.isNegated()) {
-										Map<Atom, Collection<Term>> found = SchemeTerm.generateAndOutput(scheme,
-												usables, table, facts);
-										for (Atom atom : found.keySet()) {
-											System.out.println(atom);
-											builder.addLiteral(new Literal.Builder( //
-													new Atom.Builder(atom).setWeight(mode.getWeigth())
-															.setPriority(mode.getPriority()).build())
-																	.setNegated(mode.isNegated()).setLevel(level)
-																	.build());
-											next.addAll(found.get(atom));
-										}
-									} else {
-										Map.Entry<Collection<Atom>, Collection<Term>> found = SchemeTerm
-												.matchAndOutput(scheme, table.get(scheme), usables);
-										for (Atom atom : found.getKey()) {
-											builder.addLiteral(new Literal.Builder( //
-													new Atom.Builder(atom).setWeight(mode.getWeigth())
-															.setPriority(mode.getPriority()).build())
-																	.setNegated(mode.isNegated()).setLevel(level)
-																	.build());
-										}
-										next.addAll(found.getValue());
-									}
-								}
-								used.addAll(usables);
-								next.removeAll(used);
-								usables.clear();
-								usables.addAll(next);
-								next.clear();
-							}
-							set.add(builder.build());
-							kernel = set.toArray(new Clause[set.size()]);
-
-						}
-						kernel = set.toArray(new Clause[set.size()]);
-					}
-				}*/
-
+			
 			kernel = set.toArray(new Clause[set.size()]);
+		}
 		}
 		return kernel;
 
 	}
+	
 
 	public final ModeB[] getModeBs() {
 		return problem.getModeBs();
